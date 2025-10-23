@@ -1,297 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog and Podcast</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blog & Podcast — When Machines Take the Ledger</title>
 
   <style>
-    /* ✨ Global Styles */
-    body {
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      overflow-x: hidden;
-      transition: background 1s ease;
+    /* -------------------------
+       Global (keep your colors)
+       ------------------------- */
+    :root{
+      --accent-pink: #d62896;
+      --accent-rose: #ff1493;
+      --paper-1: #dfe9f3;
+      --paper-2: #ffffff;
+      --ai-dark1: #000428;
+      --ai-dark2: #004e92;
     }
 
-    header {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      text-align: center;
-      padding: 25px;
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-
-    nav button {
-      background: none;
-      color: #fff;
-      border: none;
-      padding: 14px 20px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s ease;
-    }
-
-    nav button:hover {
-      color: #000;
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:#222;
       background: #fff;
-      border-radius: 20px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* 📄 Tabs */
-    .tab {
-      display: none;
-      padding: 40px 20px;
-      animation: fadeIn 1.2s ease;
-      min-height: 85vh;
+    header{
+      text-align:center;padding:20px;background:rgba(255,255,255,0.9);
+      position:sticky;top:0;z-index:120;
+      box-shadow:0 2px 10px rgba(0,0,0,0.06);
+    }
+    header h1{font-size:20px;color:var(--accent-pink);letter-spacing:1px}
+
+    nav{
+      display:flex;justify-content:center;gap:12px;padding:14px 12px;
+      background:rgba(255,255,255,0.95);position:sticky;top:64px;z-index:110;
+      box-shadow:0 6px 18px rgba(0,0,0,0.05)
+    }
+    nav button{
+      background:none;border:2px solid transparent;padding:10px 16px;border-radius:999px;
+      font-weight:700;color:var(--accent-pink);cursor:pointer;transition:all .28s ease;
+    }
+    nav button.active{ background:var(--accent-pink); color:#fff; transform:translateY(-3px) }
+
+    main{max-width:1100px;margin:28px auto;padding:0 18px}
+
+    .tab{display:none;min-height:75vh;padding:30px 0;position:relative;overflow:hidden}
+    .tab.active{display:block}
+
+    /* small helper for "play-once" animations.
+       by default elements have no animation; when .play-once
+       is added to the container the inner elements animate once. */
+    /* -------------------------
+       TAB 1 — Authors (one-row)
+       ------------------------- */
+    #authors{ background: linear-gradient(135deg,var(--paper-1),var(--paper-2)); border-radius:12px;padding:48px 28px; overflow:hidden }
+    /* subtle floating pastel shapes */
+    #authors .shapeA, #authors .shapeB{
+      position:absolute;border-radius:50%;opacity:0.12;filter:blur(26px);
+      pointer-events:none;
+    }
+    #authors .shapeA{ width:360px;height:360px; left:-70px; top:-40px; background:linear-gradient(135deg,#ffd6e0,#ffe9d6);}
+    #authors .shapeB{ width:260px;height:260px; right:-40px; bottom:-80px; background:linear-gradient(135deg,#d6f7ff,#e8e6ff);}
+
+    .authors-row{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:18px;
+      max-width:1000px;margin:0 auto;position:relative;z-index:2;
     }
 
-    .active {
-      display: block;
+    .author {
+      width:18%; /* five cards across */
+      text-align:center;padding:18px;border-radius:14px;background:rgba(255,255,255,0.75);
+      box-shadow:0 10px 26px rgba(0,0,0,0.06);
+      transition:transform .32s cubic-bezier(.2,.9,.3,1);
+    }
+    .author:hover{ transform:translateY(-8px) }
+
+    .author img{
+      width:120px;height:120px;border-radius:50%;object-fit:contain;background:transparent;
+      filter: drop-shadow(0 16px 30px rgba(0,0,0,0.12));
+    }
+    .author h3{ margin-top:12px;color:#111;font-size:15px }
+    .author p{ color:var(--accent-pink); font-weight:600; margin-top:6px;font-size:13px }
+
+    /* entrance animation (staggered) */
+    .authors-row .author{ opacity:0; transform: translateY(20px) }
+    .play-authors .author{ animation: authorIn .6s cubic-bezier(.2,.9,.3,1) forwards }
+    .play-authors .author:nth-child(1){ animation-delay:.06s }
+    .play-authors .author:nth-child(2){ animation-delay:.12s }
+    .play-authors .author:nth-child(3){ animation-delay:.18s }
+    .play-authors .author:nth-child(4){ animation-delay:.24s }
+    .play-authors .author:nth-child(5){ animation-delay:.30s }
+
+    @keyframes authorIn{
+      to { opacity:1; transform:translateY(0) }
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    /* -------------------------
+       TAB 2 — Story (keep colors)
+       ------------------------- */
+    #story{ background: linear-gradient(135deg,#ffeef8 0%, #ffe8f5 50%, #ffd6f0 100%); padding:64px 24px; border-radius:12px }
+    /* floating hearts + sparkles (visual elements only) */
+    .heart{ position:absolute;font-size:28px;opacity:0; transform:translateY(30px) scale(.9) }
+    .heart.h1{ left:8%; bottom:8%; animation: none }
+    .heart.h2{ left:28%; bottom:14% }
+    .heart.h3{ left:52%; bottom:10% }
+    .heart.h4{ left:72%; bottom:16% }
+    .heart.h5{ left:90%; bottom:6% }
+
+    /* story box */
+    .story-card{ max-width:820px;margin:40px auto;padding:40px;border-radius:28px;background:rgba(255,255,255,0.9);
+      box-shadow:0 20px 50px rgba(255,105,180,0.18); color:#4a4a4a; text-align:justify; position:relative; z-index:2;
+      opacity:0; transform:translateY(18px) }
+    .play-story .story-card{ animation: storyIn .7s cubic-bezier(.2,.9,.3,1) forwards }
+    @keyframes storyIn{ to{ opacity:1; transform:translateY(0) } }
+
+    .floating-quote{
+      text-align:center;color:var(--accent-pink);font-weight:800;margin-top:6px;margin-bottom:18px;opacity:0;
+      transform:translateY(18px);
+    }
+    .play-story .floating-quote{ animation: quoteIn .7s cubic-bezier(.2,.9,.3,1) forwards .08s }
+    @keyframes quoteIn{ to{ opacity:1; transform:translateY(0) } }
+
+    /* hearts animate once on tab open */
+    .play-story .heart{ animation: heartFloat .9s ease-out forwards }
+    .play-story .heart.h1{ animation-delay:.06s }
+    .play-story .heart.h2{ animation-delay:.14s }
+    .play-story .heart.h3{ animation-delay:.22s }
+    .play-story .heart.h4{ animation-delay:.30s }
+    .play-story .heart.h5{ animation-delay:.38s }
+
+    @keyframes heartFloat{
+      from{ opacity:0; transform:translateY(20px) scale(.9) }
+      to{ opacity:0.85; transform:translateY(-8px) scale(1) }
     }
 
-    /* 📰 TAB 1 - Authors Page */
-    #authors {
-      background: linear-gradient(135deg, #dfe9f3, #ffffff);
-      color: #222;
-    }
+    /* audio blog styling (pink glow) */
+    .audio-blog{ text-align:center;margin-top:22px }
+    .audio-blog audio{ width:78%; border-radius:14px; box-shadow:0 18px 36px rgba(214,40,150,0.14) }
 
-    .authors {
-      display: flex;
-      justify-content: space-around;
-      align-items: flex-start;
-      flex-wrap: nowrap;
-      gap: 15px;
-      margin-top: 50px;
-      text-align: center;
-    }
+    /* -------------------------
+       TAB 3 — Podcast (AI) keep colors
+       ------------------------- */
+    #ai{ background: radial-gradient(circle at top left,var(--ai-dark1),var(--ai-dark2)); padding:64px 18px;border-radius:12px; color:#cce7ff }
+    /* subtle grid overlay */
+    .grid-overlay{ position:absolute;inset:0;opacity:0.08; background-image: linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px), linear-gradient(0deg, rgba(0,255,255,0.05) 1px, transparent 1px); background-size: 60px 60px; z-index:0; transform: translateZ(0) }
+    .ai-card{ max-width:980px;margin:0 auto;padding:36px;border-radius:20px;background:rgba(0,10,20,0.28);backdrop-filter: blur(8px);position:relative;z-index:2;opacity:0; transform:translateY(14px) }
+    .play-ai .ai-card{ animation: aiIn .7s cubic-bezier(.2,.9,.3,1) forwards }
+    @keyframes aiIn{ to{ opacity:1; transform:translateY(0) } }
 
-    .author-card {
-      width: 18%;
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-    }
+    /* subtle orb pulse one-time */
+    .ai-orb{ position:absolute;border-radius:50%;filter:blur(40px);opacity:0; pointer-events:none }
+    .ai-orb.o1{ width:260px;height:260px; left:6%; top:6%; background:radial-gradient(circle,#00ffff,transparent) }
+    .ai-orb.o2{ width:200px;height:200px; right:10%; bottom:8%; background:radial-gradient(circle,#00ff88,transparent) }
+    .play-ai .ai-orb{ animation: orbPulse .9s ease-out forwards }
+    @keyframes orbPulse{ from{ opacity:0; transform:scale(.85) } to{ opacity:0.28; transform:scale(1) } }
 
-    .author-card:hover {
-      transform: translateY(-10px);
-    }
+    .video-wrap{ margin-top:20px;border-radius:12px;overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45) }
+    video{ width:100%; display:block }
 
-    .author-card img {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: contain;
-      background: transparent;
+    /* responsiveness */
+    @media (max-width:900px){
+      .authors-row{ gap:10px }
+      .author{ width:18% } /* will naturally wrap if too narrow */
+      .author img{ width:100px;height:100px }
+      .story-card{ padding:28px }
     }
-
-    #authors::before {
-      content: "";
-      position: absolute;
-      top: 100px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-      opacity: 0.3;
-      z-index: 0;
-    }
-
-    /* 🌌 TAB 2 - Story Page */
-    #content {
-      background: linear-gradient(160deg, #2b1055, #7597de);
-      position: relative;
-      overflow: hidden;
-    }
-
-    #content h2 {
-      text-align: center;
-      color: #fff;
-    }
-
-    .floating-quote {
-      position: absolute;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 28px;
-      color: #f9e79f;
-      animation: float 4s ease-in-out infinite;
-      text-shadow: 0 0 10px #fff, 0 0 20px #f9e79f;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(-50%, 0); }
-      50% { transform: translate(-50%, -15px); }
-    }
-
-    .story-box {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 700px;
-      margin: 120px auto 50px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      color: #fff;
-      line-height: 1.8;
-      font-size: 17px;
-    }
-
-    /* 🤖 TAB 3 - AI Theme */
-    #podcast {
-      background: radial-gradient(circle at top left, #000428, #004e92);
-      text-align: center;
-      color: #fff;
-      position: relative;
-      overflow: hidden;
-    }
-
-    #podcast::before {
-      content: "";
-      position: absolute;
-      top: -50px;
-      left: -50px;
-      right: -50px;
-      bottom: -50px;
-      background: url('https://www.transparenttextures.com/patterns/circuits.png');
-      opacity: 0.1;
-      z-index: 0;
-    }
-
-    .podcast-container {
-      position: relative;
-      z-index: 1;
-      padding: 50px;
-    }
-
-    .podcast-video {
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-      width: 80%;
-      max-width: 720px;
-    }
-
-    .description {
-      margin-top: 25px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-      font-size: 17px;
-      color: #cce7ff;
+    @media (max-width:640px){
+      .authors-row{ display:flex;flex-wrap:wrap;justify-content:center }
+      .author{ width:46%; margin-bottom:12px }
     }
   </style>
 </head>
-
 <body>
-  <header>🌸 My Creative Blog</header>
+  <header><h1>WHEN MACHINES TAKE THE LEDGER</h1></header>
 
   <nav>
-    <button onclick="openTab('authors')">Tab 1: Authors</button>
-    <button onclick="openTab('content')">Tab 2: Story</button>
-    <button onclick="openTab('podcast')">Tab 3: Podcast</button>
+    <button id="btn-auth" class="active">Tab 1 · Authors</button>
+    <button id="btn-story">Tab 2 · Story</button>
+    <button id="btn-ai">Tab 3 · Podcast</button>
   </nav>
 
-  <!-- TAB 1: AUTHORS -->
-  <section id="authors" class="tab active">
-    <h2 style="text-align:center;">📰 Meet the Team Behind the Blog</h2>
-    <p style="text-align:center;">Brilliant minds shaping creativity and innovation ✨</p>
+  <main>
+    <!-- TAB 1 -->
+    <section id="authors" class="tab active" aria-labelledby="btn-auth">
+      <div class="shapeA" aria-hidden="true"></div>
+      <div class="shapeB" aria-hidden="true"></div>
 
-    <div class="authors">
-      <div class="author-card">
-        <img src="author1.png">
-        <h3>John Saimon Gabriel P. Novenario</h3>
-        <p><strong>Website Developer</strong></p>
-      </div>
-      <div class="author-card">
-        <img src="author2.png">
-        <h3>Aizy Dacles</h3>
-        <p><strong>Graphics Designer</strong></p>
-      </div>
-      <div class="author-card">
-        <img src="author3.png">
-        <h3>Francis Bandojo</h3>
-        <p><strong>Author & Script Writer</strong></p>
-      </div>
-      <div class="author-card">
-        <img src="author4.png">
-        <h3>Yunize Yael Lista</h3>
-        <p><strong>Podcast Host</strong></p>
-      </div>
-      <div class="author-card">
-        <img src="author5.png">
-        <h3>Vynz Gabrielle Tusit</h3>
-        <p><strong>Podcast Host</strong></p>
-      </div>
-    </div>
-  </section>
+      <h2 style="text-align:center;color:var(--accent-pink);margin-bottom:8px">📰 Meet the Team</h2>
+      <p style="text-align:center;color:#666;margin-bottom:26px">Publication & Production — Five members</p>
 
-  <!-- TAB 2: STORY -->
-  <section id="content" class="tab">
-    <div class="floating-quote">“It all started with a hello.”</div>
-    <div class="story-box">
-      <h2>💫 The Story of an Introvert and a Hello</h2>
-      <p>
-        He never thought that a simple “hello” could change his life. For years, he hid behind silence, 
-        behind the comfort of solitude, where words were whispers and connections were distant dreams.
-      </p>
-      <p>
-        Until she came along — bright, curious, and kind. Her voice broke through his quiet world. 
-        “Hello,” she said. It wasn’t loud. It wasn’t forced. But it was everything.
-      </p>
-      <p>
-        From that single word, a world opened. A story began — one where the quiet boy found color, 
-        and the girl discovered peace in the quiet.
-      </p>
-      <p style="text-align:center; margin-top:30px;">🌙 Sometimes, all it takes is one word to change everything.</p>
-    </div>
-  </section>
+      <div class="authors-row" id="authors-row">
+        <div class="author">
+          <img src="author1.png" alt="John Saimon Gabriel P. Novenario">
+          <h3>John Saimon G. Novenario</h3>
+          <p>Website Developer</p>
+        </div>
 
-  <!-- TAB 3: PODCAST -->
-  <section id="podcast" class="tab">
-    <div class="podcast-container">
-      <h2>🤖 When Machines Take the Ledger</h2>
-      <video class="podcast-video" controls>
-        <source src="podcast.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <div class="description">
-        In this podcast, we explore how artificial intelligence is transforming the accounting landscape — 
-        replacing repetitive tasks, reshaping job roles, and redefining what it means to be a professional 
-        in a digital world.
+        <div class="author">
+          <img src="author2.png" alt="Aizy Dacles">
+          <h3>Aizy Dacles</h3>
+          <p>Graphics Designer</p>
+        </div>
+
+        <div class="author">
+          <img src="author3.png" alt="Francis Bandojo">
+          <h3>Francis Bandojo</h3>
+          <p>Author & Script Writer</p>
+        </div>
+
+        <div class="author">
+          <img src="author4.png" alt="Yunize Yael Lista">
+          <h3>Yunize Yael Lista</h3>
+          <p>Podcast Host</p>
+        </div>
+
+        <div class="author">
+          <img src="author5.png" alt="Vynz Gabrielle Tusit">
+          <h3>Vynz Gabrielle Tusit</h3>
+          <p>Podcast Host</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- TAB 2 -->
+    <section id="story" class="tab" aria-labelledby="btn-story">
+      <!-- floating hearts (visual only) -->
+      <div class="heart h1">💕</div>
+      <div class="heart h2">💖</div>
+      <div class="heart h3">💗</div>
+      <div class="heart h4">💓</div>
+      <div class="heart h5">💝</div>
+
+      <h2 class="floating-quote">“It all started with a hello.”</h2>
+
+      <article class="story-card" id="story-card">
+        <h2 style="color:var(--accent-pink);text-align:center;margin-bottom:14px">The Introvert and the Hello</h2>
+
+        <p>
+          He was the kind of guy who found comfort in silence. His world was made of soft lights, unspoken words, and pages filled with thoughts never sent. Until one afternoon, a simple "hello" broke the quiet.
+        </p>
+
+        <p>
+          It wasn't dramatic — just a word. Yet, it lingered, echoed, and softened the walls he had built. That one word became the start of everything — a friendship, a warmth, a change he never saw coming.
+        </p>
+
+        <p>
+          Sometimes, it doesn't take much. Just courage to say hello… and someone who says it back.
+        </p>
+
+        <div class="audio-blog" style="margin-top:26px">
+          <h3 style="color:var(--accent-pink);margin-bottom:10px">🎧 Listen to the Audio Blog</h3>
+          <audio controls preload="none">
+            <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      </article>
+    </section>
+
+    <!-- TAB 3 -->
+    <section id="ai" class="tab" aria-labelledby="btn-ai">
+      <div class="grid-overlay" aria-hidden="true"></div>
+      <div class="ai-orb o1" aria-hidden="true"></div>
+      <div class="ai-orb o2" aria-hidden="true"></div>
+
+      <div class="ai-card" id="ai-card">
+        <h2 style="text-align:center;font-size:28px;color:#cdefff;margin-bottom:10px">🤖 When Machines Take the Ledger</h2>
+        <p style="text-align:center;color:#bfefff;max-width:820px;margin:0 auto 18px">
+          As artificial intelligence evolves, the accounting world stands on the brink of transformation.
+          What once required human precision is now being handled by algorithms capable of instant analysis.
+        </p>
+
+        <div class="video-wrap">
+          <video controls preload="metadata">
+            <source src="podcast.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    function openTab(tabName) {
-      const tabs = document.getElementsByClassName("tab");
-      for (let tab of tabs) tab.classList.remove("active");
-      document.getElementById(tabName).classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    // Tab controls (preserve layout/colors)
+    const btnAuth = document.getElementById('btn-auth');
+    const btnStory = document.getElementById('btn-story');
+    const btnAi = document.getElementById('btn-ai');
+
+    const tabAuthors = document.getElementById('authors');
+    const tabStory = document.getElementById('story');
+    const tabAi = document.getElementById('ai');
+
+    const allBtns = [btnAuth, btnStory, btnAi];
+    const allTabs = [tabAuthors, tabStory, tabAi];
+
+    function clearActive(){
+      allTabs.forEach(t=>t.classList.remove('active','play-authors','play-story','play-ai'));
+      allBtns.forEach(b=>b.classList.remove('active'));
     }
+
+    // helper: add play-once classes that trigger CSS entrance animations, then remove them after animations finish
+    function triggerPlayOnce(tab){
+      // authors
+      if(tab === tabAuthors){
+        tabAuthors.classList.add('play-authors');
+        // remove after the last animation ends (~ duration + small buffer)
+        setTimeout(()=> tabAuthors.classList.remove('play-authors'), 900);
+      }
+      // story
+      if(tab === tabStory){
+        tabStory.classList.add('play-story');
+        setTimeout(()=> tabStory.classList.remove('play-story'), 900);
+      }
+      // ai
+      if(tab === tabAi){
+        tabAi.classList.add('play-ai');
+        setTimeout(()=> tabAi.classList.remove('play-ai'), 900);
+      }
+    }
+
+    function open(tabName){
+      clearActive();
+      if(tabName === 'authors'){ tabAuthors.classList.add('active'); btnAuth.classList.add('active'); triggerPlayOnce(tabAuthors) }
+      if(tabName === 'story'){ tabStory.classList.add('active'); btnStory.classList.add('active'); triggerPlayOnce(tabStory) }
+      if(tabName === 'ai'){ tabAi.classList.add('active'); btnAi.classList.add('active'); triggerPlayOnce(tabAi) }
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    btnAuth.addEventListener('click', ()=> open('authors'));
+    btnStory.addEventListener('click', ()=> open('story'));
+    btnAi.addEventListener('click', ()=> open('ai'));
+
+    // initial play for first tab (authors) on page load
+    window.addEventListener('load', ()=> { triggerPlayOnce(tabAuthors) });
+
+    // Accessibility: allow keyboard 1-3 to switch tabs
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === '1') open('authors');
+      if(e.key === '2') open('story');
+      if(e.key === '3') open('ai');
+    });
+
+    // Pause audio if leaving its tab
+    const storyAudio = document.querySelector('#story audio');
+    const observer = new MutationObserver(() => {
+      if(!tabStory.classList.contains('active') && storyAudio && !storyAudio.paused){
+        storyAudio.pause();
+      }
+    });
+    observer.observe(document.body, { attributes:true, subtree:true, attributeFilter:['class'] });
   </script>
 </body>
 </html>
