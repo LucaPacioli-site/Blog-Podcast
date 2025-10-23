@@ -6,41 +6,39 @@
   <title>Blog and Podcast</title>
 
   <style>
-    /* 🌸 Aesthetic background gradient */
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #a8edea, #fed6e3);
       margin: 0;
       padding: 0;
-      color: #333;
+      color: #fff;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       overflow-x: hidden;
     }
 
-    /* 🌟 Header Style */
     header {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
-      color: #222;
       text-align: center;
       padding: 25px;
       font-size: 28px;
       font-weight: 700;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      letter-spacing: 2px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      color: #00ffff;
+      text-transform: uppercase;
     }
 
-    /* 🌈 Navigation Bar */
     nav {
       display: flex;
       justify-content: center;
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(0,0,0,0.4);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     nav button {
       background: none;
-      color: #222;
+      color: #00ffff;
       border: none;
       padding: 14px 20px;
       cursor: pointer;
@@ -49,15 +47,14 @@
     }
 
     nav button:hover {
-      color: #fff;
-      background: #4a90e2;
+      color: #111;
+      background: #00ffff;
       border-radius: 20px;
     }
 
-    /* 📄 Tab Content */
     .tab {
       display: none;
-      padding: 30px;
+      padding: 40px;
       animation: fadeIn 1s ease-in-out;
       min-height: 80vh;
     }
@@ -71,27 +68,36 @@
       display: block;
     }
 
-    /* 👥 Authors Section */
+    /* Authors Layout */
     .authors {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      justify-items: center;
+      margin: 40px auto;
+      max-width: 800px;
+    }
+
+    .authors-bottom {
       display: flex;
+      justify-content: center;
       flex-wrap: wrap;
       gap: 25px;
-      justify-content: center;
-      margin-top: 30px;
     }
 
     .author-card {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
       padding: 20px;
       border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,255,255,0.2);
       text-align: center;
       width: 220px;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .author-card:hover {
       transform: scale(1.05);
+      box-shadow: 0 4px 25px rgba(0,255,255,0.5);
     }
 
     .author-card img {
@@ -100,110 +106,140 @@
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 10px;
+      border: 2px solid #00ffff;
     }
 
-    /* 🎧 Voice Recording Player */
-    audio {
-      margin-top: 20px;
-      width: 100%;
+    h2, h3 {
+      color: #00ffff;
     }
 
-    /* 🧁 Content Box Design */
+    /* Blog Content Section */
     .content-box {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0,255,255,0.3);
       border-radius: 20px;
       padding: 25px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 15px rgba(0,255,255,0.2);
       max-width: 800px;
-      margin: 20px auto;
+      margin: 30px auto;
       transition: 0.3s ease;
     }
 
     .content-box:hover {
       transform: scale(1.02);
+      box-shadow: 0 3px 20px rgba(0,255,255,0.4);
     }
 
-    h2, h3 {
-      color: #2c3e50;
+    .neon-text {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00cccc;
     }
+
+    audio, video {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    video {
+      box-shadow: 0 3px 20px rgba(0,255,255,0.3);
+    }
+
   </style>
 </head>
 
 <body>
-  <header>🌸 My Creative Blog</header>
+  <header>🤖 When Machines Take the Ledger</header>
 
   <nav>
     <button onclick="openTab('authors')">Tab 1: Authors</button>
-    <button onclick="openTab('content')">Tab 2: Content</button>
+    <button onclick="openTab('content')">Tab 2: Blog Content</button>
+    <button onclick="openTab('podcast')">Tab 3: Podcast</button>
   </nav>
 
   <!-- TAB 1: AUTHORS -->
   <section id="authors" class="tab active">
-    <h2>👩‍💻 Meet the Authors & Editors</h2>
-    <p style="text-align:center;">Get to know the brilliant minds behind this blog ✨</p>
+    <h2>👨‍💻 Meet the Authors & Editors</h2>
+    <p style="text-align:center;">Get to know the brilliant minds behind this AI-driven project ✨</p>
 
     <div class="authors">
       <div class="author-card">
         <img src="author1.jpg">
         <h3>John Saimon Gabriel P. Novenario</h3>
         <p><strong>Website Developer</strong></p>
-        <p>Passionate about storytelling, creativity, and technology 💡</p>
+        <p>Innovator behind the digital transformation of our blog ⚙️</p>
       </div>
 
       <div class="author-card">
         <img src="author2.jpg">
         <h3>Aizy Dacles</h3>
-        <p><strong>Graphics Design</strong></p>
-        <p>Loves turning words into visuals that spark imagination 🎨</p>
+        <p><strong>Graphics Designer</strong></p>
+        <p>Crafts futuristic visuals that mirror the rise of AI 🎨</p>
       </div>
+    </div>
 
+    <div class="authors-bottom">
       <div class="author-card">
-        <img src="author2.jpg">
+        <img src="author3.jpg">
         <h3>Francis Bandojo</h3>
         <p><strong>Author & Script Writer</strong></p>
-        <p>Loves turning words into visuals that spark imagination 🎨</p>
+        <p>Creates impactful narratives blending humans and machines 🧠</p>
       </div>
 
       <div class="author-card">
-        <img src="author2.jpg">
+        <img src="author4.jpg">
         <h3>Yunize Yael Lista</h3>
-        <p><strong>PODCAST host</strong></p>
-        <p>Loves turning words into visuals that spark imagination 🎨</p>
+        <p><strong>Podcast Host</strong></p>
+        <p>Brings tech discussions to life with engaging storytelling 🎤</p>
       </div>
 
       <div class="author-card">
-        <img src="author2.jpg">
+        <img src="author5.jpg">
         <h3>Vynz Gabrielle Tusit</h3>
-        <p><strong>PODCAST host</strong></p>
-        <p>Loves turning words into visuals that spark imagination 🎨</p>
-        
+        <p><strong>Podcast Host</strong></p>
+        <p>Leads thought-provoking talks about the AI revolution 💬</p>
       </div>
     </div>
   </section>
 
   <!-- TAB 2: CONTENT -->
   <section id="content" class="tab">
-    <h2>📰 Blog Content</h2>
-    <p style="text-align:center;">Explore our stories, reflections, and creative works 🌼</p>
+    <h2 class="neon-text">🧠 Blog Post: “When Machines Take the Ledger”</h2>
+    <p style="text-align:center;">Exploring how Artificial Intelligence is redefining the accounting landscape.</p>
 
     <div class="content-box">
-      <h3>✨ Featured Story: “When Machines Take the Ledger”</h3>
+      <h3>📊 The Rise of AI Accountants</h3>
       <p>
-        In a world driven by automation, the accounting profession faces an evolution.
-        What was once manual and time-consuming is now handled by intelligent systems
-        that think, record, and analyze in real-time.
+        As automation accelerates, accounting systems evolve into intelligent platforms capable of
+        detecting patterns, predicting trends, and preventing fraud faster than any human ever could.
+        The efficiency and precision of AI make it a powerful ally — or a potential replacement.
       </p>
       <p>
-        But can machines truly replace human intuition and ethical judgment?
-        Dive into our reflection and find out.
+        Yet, behind every algorithm lies a human question: <em>Can technology truly understand ethics, empathy, or accountability?</em>
       </p>
     </div>
 
     <div class="content-box">
-      <h3>🎧 Audio Reader:</h3>
+      <h3>🔊 Voice Reader</h3>
       <audio controls>
-        <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+        <source src="your-audio.mp3" type="audio/mpeg">
       </audio>
+    </div>
+  </section>
+
+  <!-- TAB 3: PODCAST -->
+  <section id="podcast" class="tab">
+    <h2 class="neon-text">🎧 AI & The Future of Accounting — Podcast</h2>
+    <p style="text-align:center;">A deep conversation about how automation is transforming the accounting world.</p>
+
+    <div class="content-box">
+      <video controls>
+        <source src="podcast-video.mp4" type="video/mp4">
+      </video>
+      <p style="margin-top:10px;">
+        In this episode, our hosts discuss how AI-driven analytics are reshaping the accounting profession,
+        what skills will matter in the next decade, and whether the human touch can ever be replaced.
+      </p>
     </div>
   </section>
 
@@ -217,7 +253,3 @@
   </script>
 </body>
 </html>
-
-
-
-
