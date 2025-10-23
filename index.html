@@ -1,307 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Podcast</title>
+
   <style>
-    * {margin: 0; padding: 0; box-sizing: border-box;}
+    /* ✨ Global Styles */
     body {
-      font-family: "Playfair Display", "Georgia", serif;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #fff;
       overflow-x: hidden;
-      background: #fff;
+      transition: background 1s ease;
     }
 
-    /* NAVIGATION */
+    header {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      text-align: center;
+      padding: 25px;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
     nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
       display: flex;
       justify-content: center;
-      background: rgba(20, 20, 20, 0.98);
+      background-color: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
-      z-index: 1000;
-      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
     }
 
     nav button {
       background: none;
-      border: 2px solid transparent;
       color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 12px 30px;
-      margin: 0 10px;
+      border: none;
+      padding: 14px 20px;
       cursor: pointer;
-      border-radius: 30px;
-      transition: all 0.4s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-family: "Poppins", sans-serif;
-    }
-    nav button:hover {
-      background: #c41e3a;
-      color: white;
-      border-color: #c41e3a;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(196, 30, 58, 0.4);
-    }
-    nav button.active-btn {
-      background: #c41e3a;
-      color: white;
-      border-color: #c41e3a;
+      font-size: 16px;
+      transition: 0.3s ease;
     }
 
-    /* TABS */
+    nav button:hover {
+      color: #000;
+      background: #fff;
+      border-radius: 20px;
+    }
+
+    /* 📄 Tabs */
     .tab {
       display: none;
-      min-height: 100vh;
-      padding-top: 70px;
-      position: relative;
-      z-index: 1;
+      padding: 40px 20px;
+      animation: fadeIn 1.2s ease;
+      min-height: 85vh;
     }
+
     .active {
       display: block;
-      animation: fadeSlide 0.8s ease;
-    }
-    @keyframes fadeSlide {
-      from {opacity: 0; transform: translateY(30px);}
-      to {opacity: 1; transform: translateY(0);}
     }
 
-    /* TAB 1: AUTHORS */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 📰 TAB 1 - Authors Page */
     #authors {
-      background: #f8f8f8;
-      padding: 80px 40px 100px;
-      position: relative;
-      z-index: 2;
+      background: linear-gradient(135deg, #dfe9f3, #ffffff);
+      color: #222;
     }
 
-    .publication-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    .publication-header h1 {
-      font-size: 4rem;
-      color: #1a1a1a;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .red-line {
-      width: 80px;
-      height: 4px;
-      background: #c41e3a;
-      margin: 20px auto;
-    }
-    .subtitle {
-      color: #c41e3a;
-      font-style: italic;
-    }
-
-    .hosts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      justify-items: center;
-    }
-    .person-card {
-      text-align: center;
-    }
-    .person-card img {
-      width: 180px;
-      height: 180px;
-      object-fit: contain;
-      border-radius: 50%;
-      filter: grayscale(100%);
-      transition: 0.3s;
-    }
-    .person-card:hover img { filter: grayscale(0); }
-    .person-card h3 { margin-top: 15px; color: #1a1a1a; }
-    .person-card .role { color: #c41e3a; font-weight: 600; }
-
-    /* TAB 2: STORY */
-    #story {
-      background: linear-gradient(135deg, #ffeef8 0%, #ffe8f5 50%, #ffd6f0 100%);
-      padding: 100px 40px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .story-container { max-width: 900px; margin: 0 auto; }
-    .story-title {
-      text-align: center;
-      font-size: 4rem;
-      color: #d62896;
-      margin-bottom: 30px;
-      font-weight: 700;
-    }
-    .love-quote {
-      font-size: 2rem;
-      color: #ff1493;
-      text-align: center;
-      margin: 40px 0;
-      font-style: italic;
-    }
-    .story-box {
-      background: rgba(255, 255, 255, 0.8);
-      padding: 50px;
-      border-radius: 30px;
-      box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
-      text-align: justify;
-    }
-    .story-box p {
-      font-size: 1.2rem;
-      line-height: 1.8;
-      margin-bottom: 20px;
-      color: #4a4a4a;
-    }
-    .story-box h2 {
-      color: #d62896;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    /* 🎧 AUDIO BLOG */
-    .audio-blog {
-      text-align: center;
+    .authors {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 15px;
       margin-top: 50px;
-    }
-    .audio-blog h3 {
-      color: #d62896;
-      font-size: 1.6rem;
-      margin-bottom: 15px;
-    }
-    .audio-blog audio {
-      width: 80%;
-      border-radius: 30px;
-      outline: none;
-      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+      text-align: center;
     }
 
-    /* TAB 3: PODCAST */
-    #ai {
-      background: #0a0a0a;
-      color: white;
-      padding: 100px 40px;
+    .author-card {
+      width: 18%;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .author-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .author-card img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: transparent;
+    }
+
+    #authors::before {
+      content: "";
+      position: absolute;
+      top: 100px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    /* 🌌 TAB 2 - Story Page */
+    #content {
+      background: linear-gradient(160deg, #2b1055, #7597de);
       position: relative;
       overflow: hidden;
-      z-index: 2;
     }
-    .ai-title {
+
+    #content h2 {
       text-align: center;
-      font-size: 4rem;
-      margin-bottom: 40px;
-      background: linear-gradient(135deg, #00ffff, #00ff88, #00ffff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
     }
-    .tech-box {
-      background: rgba(0, 20, 40, 0.8);
-      border-radius: 30px;
-      padding: 60px;
-      box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+
+    .floating-quote {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      color: #f9e79f;
+      animation: float 4s ease-in-out infinite;
+      text-shadow: 0 0 10px #fff, 0 0 20px #f9e79f;
     }
-    .tech-box p {
-      text-align: center;
-      color: #b0e0e6;
-      font-size: 1.3rem;
-      line-height: 1.8;
+
+    @keyframes float {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -15px); }
     }
-    .video-wrapper {
-      margin-top: 30px;
+
+    .story-box {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
       border-radius: 20px;
+      padding: 30px;
+      max-width: 700px;
+      margin: 120px auto 50px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      color: #fff;
+      line-height: 1.8;
+      font-size: 17px;
+    }
+
+    /* 🤖 TAB 3 - AI Theme */
+    #podcast {
+      background: radial-gradient(circle at top left, #000428, #004e92);
+      text-align: center;
+      color: #fff;
+      position: relative;
       overflow: hidden;
     }
-    video { width: 100%; border-radius: 20px; }
 
+    #podcast::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      right: -50px;
+      bottom: -50px;
+      background: url('https://www.transparenttextures.com/patterns/circuits.png');
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .podcast-container {
+      position: relative;
+      z-index: 1;
+      padding: 50px;
+    }
+
+    .podcast-video {
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      width: 80%;
+      max-width: 720px;
+    }
+
+    .description {
+      margin-top: 25px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 17px;
+      color: #cce7ff;
+    }
   </style>
 </head>
 
 <body>
+  <header>🌸 My Creative Blog</header>
+
   <nav>
-    <button class="active-btn" onclick="openTab('authors', this)">Authors</button>
-    <button onclick="openTab('story', this)">Story</button>
-    <button onclick="openTab('ai', this)">Podcast</button>
+    <button onclick="openTab('authors')">Tab 1: Authors</button>
+    <button onclick="openTab('content')">Tab 2: Story</button>
+    <button onclick="openTab('podcast')">Tab 3: Podcast</button>
   </nav>
 
   <!-- TAB 1: AUTHORS -->
   <section id="authors" class="tab active">
-    <div class="publication-header">
-      <h1>The Team</h1>
-      <div class="red-line"></div>
-      <p class="subtitle">Creative Minds Behind the Publication</p>
-    </div>
-    <div class="hosts-grid">
-      <div class="person-card">
-        <img src="author3.png" alt="Francis Bandojo" />
+    <h2 style="text-align:center;">📰 Meet the Team Behind the Blog</h2>
+    <p style="text-align:center;">Brilliant minds shaping creativity and innovation ✨</p>
+
+    <div class="authors">
+      <div class="author-card">
+        <img src="author1.png">
+        <h3>John Saimon Gabriel P. Novenario</h3>
+        <p><strong>Website Developer</strong></p>
+      </div>
+      <div class="author-card">
+        <img src="author2.png">
+        <h3>Aizy Dacles</h3>
+        <p><strong>Graphics Designer</strong></p>
+      </div>
+      <div class="author-card">
+        <img src="author3.png">
         <h3>Francis Bandojo</h3>
-        <p class="role">Script Writer</p>
+        <p><strong>Author & Script Writer</strong></p>
+      </div>
+      <div class="author-card">
+        <img src="author4.png">
+        <h3>Yunize Yael Lista</h3>
+        <p><strong>Podcast Host</strong></p>
+      </div>
+      <div class="author-card">
+        <img src="author5.png">
+        <h3>Vynz Gabrielle Tusit</h3>
+        <p><strong>Podcast Host</strong></p>
       </div>
     </div>
   </section>
 
   <!-- TAB 2: STORY -->
-  <section id="story" class="tab">
-    <div class="story-container">
-      <h1 class="story-title">The Introvert and the Hello</h1>
-      <div class="love-quote">"It all started with a hello."</div>
-      <div class="story-box">
-        <h2>💫 A Story of Connection</h2>
-        <p>
-          He was the kind of guy who found comfort in silence. His world was made of
-          soft lights, unspoken words, and pages filled with thoughts never sent.  
-          Until one afternoon, a simple "hello" broke the quiet.
-        </p>
-        <p>
-          It wasn't dramatic — just a word. Yet, it lingered, echoed, and softened
-          the walls he had built. That one word became the start of everything — a
-          friendship, a warmth, a change he never saw coming.
-        </p>
-        <p>
-          Sometimes, it doesn't take much. Just courage to say hello… and someone who
-          says it back.
-        </p>
-      </div>
-
-      <div class="audio-blog">
-        <h3>🎧 Listen to the Audio Blog</h3>
-        <audio controls>
-          <source src="story.mp3" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-      </div>
+  <section id="content" class="tab">
+    <div class="floating-quote">“It all started with a hello.”</div>
+    <div class="story-box">
+      <h2>💫 The Story of an Introvert and a Hello</h2>
+      <p>
+        He never thought that a simple “hello” could change his life. For years, he hid behind silence, 
+        behind the comfort of solitude, where words were whispers and connections were distant dreams.
+      </p>
+      <p>
+        Until she came along — bright, curious, and kind. Her voice broke through his quiet world. 
+        “Hello,” she said. It wasn’t loud. It wasn’t forced. But it was everything.
+      </p>
+      <p>
+        From that single word, a world opened. A story began — one where the quiet boy found color, 
+        and the girl discovered peace in the quiet.
+      </p>
+      <p style="text-align:center; margin-top:30px;">🌙 Sometimes, all it takes is one word to change everything.</p>
     </div>
   </section>
 
   <!-- TAB 3: PODCAST -->
-  <section id="ai" class="tab">
+  <section id="podcast" class="tab">
     <div class="podcast-container">
-      <h1 class="ai-title">When Machines Take the Ledger</h1>
-      <div class="tech-box">
-        <p>
-          As artificial intelligence evolves, the accounting world stands on the brink of transformation.  
-          What once required human precision is now being handled by algorithms capable of instant analysis.
-        </p>
-        <div class="video-wrapper">
-          <video controls>
-            <source src="podcast.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        <p style="text-align:center; font-style:italic;">🎙️ Podcast Discussion: The Future of Accountancy in the Age of AI</p>
+      <h2>🤖 When Machines Take the Ledger</h2>
+      <video class="podcast-video" controls>
+        <source src="podcast.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="description">
+        In this podcast, we explore how artificial intelligence is transforming the accounting landscape — 
+        replacing repetitive tasks, reshaping job roles, and redefining what it means to be a professional 
+        in a digital world.
       </div>
     </div>
   </section>
 
   <script>
-    function openTab(tabName, btn) {
+    function openTab(tabName) {
       const tabs = document.getElementsByClassName("tab");
-      const buttons = document.querySelectorAll("nav button");
       for (let tab of tabs) tab.classList.remove("active");
-      for (let button of buttons) button.classList.remove("active-btn");
       document.getElementById(tabName).classList.add("active");
-      btn.classList.add("active-btn");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   </script>
