@@ -1,500 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Canva-style Tabs — News / Story / AI</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&family=Montserrat:wght@700&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Blog & Podcast</title>
 <style>
-  :root{
-    --red: #c41e3a;
-    --pink: #d62896;
-    --ai-blue: #00b4ff;
-    --white: #ffffff;
-    --muted: #444;
-    --bg-dark: #0b0f14;
-    --nav-height: 76px;
-    --transition-speed: 820ms;
-  }
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body, html {
+  width: 100%; height: 100%; overflow: hidden;
+}
 
-  /* Reset */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;width:100%}
-  body{
-    font-family:"Poppins",system-ui,Arial,sans-serif;
-    background:#0b0f14;
-    color:var(--muted);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    overflow:hidden; /* main scrolls area will handle content */
-  }
+/* Fixed top nav */
+nav {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  display: flex; justify-content: center;
+  z-index: 1000;
+}
+nav button {
+  background: none; border: none;
+  padding: 15px 25px; cursor: pointer;
+  font-weight: 600; font-size: 16px;
+  transition: 0.3s;
+}
+nav button:hover { color: white; background: #4a90e2; border-radius: 20px; }
 
-  /* NAV (top fixed) */
-  nav{
-    position:fixed;top:0;left:0;right:0;height:var(--nav-height);
-    display:flex;align-items:center;justify-content:center;gap:12px;
-    background:linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(255,255,255,0.00));
-    z-index:9999;padding:12px;
-    border-bottom:1px solid rgba(255,255,255,0.03);
-    backdrop-filter: blur(6px);
-  }
-  .tab-btn{
-    display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);
-    background:transparent;color:var(--white);cursor:pointer;font-weight:700;transition:all .28s cubic-bezier(.2,.9,.3,1);
-    font-size:14px;backdrop-filter:blur(4px);
-  }
-  .tab-btn .icon{ width:18px;height:18px; flex-shrink:0; display:inline-block }
-  .tab-btn:not(.active):hover{ transform:translateY(-4px); box-shadow:0 14px 34px rgba(0,0,0,0.18) }
+/* Tabs base */
+.tab {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0; transform: translateX(100%);
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  overflow: hidden;
+}
+.tab.active {
+  opacity: 1; transform: translateX(0);
+  z-index: 10;
+}
+.tab.to-left { transform: translateX(-100%); opacity:0; }
+.tab.to-right { transform: translateX(100%); opacity:0; }
 
-  /* active backgrounds change depending on data-theme */
-  .tab-btn.active[data-theme="red"]{ background: linear-gradient(90deg,var(--red), #ff3b4f); }
-  .tab-btn.active[data-theme="pink"]{ background: linear-gradient(90deg,var(--pink), #ff5aa8); }
-  .tab-btn.active[data-theme="blue"]{ background: linear-gradient(90deg,#004a9f,var(--ai-blue)); }
+/* ===== TAB 1 - News Section ===== */
+#tab1 {
+  background: linear-gradient(120deg,#ff4d4d,#b30000);
+  overflow: hidden;
+  color: white;
+}
+#tab1::before {
+  content:"";
+  position:absolute; width:200%; height:200%;
+  background: repeating-linear-gradient(
+    -45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 2px,
+    transparent 2px, transparent 8px);
+  animation: ticker 8s linear infinite;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.authors-row {
+  display: flex; justify-content: center; gap: 25px;
+  flex-wrap: nowrap;
+  position: relative; z-index: 1;
+}
+.author-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  padding: 20px; border-radius: 15px;
+  width: 180px; text-align:center;
+  transition: 0.3s; position: relative;
+}
+.author-card:hover { transform: scale(1.05); box-shadow:0 0 20px rgba(255,255,255,0.6); }
+.author-card img {
+  width:100px; height:100px; border-radius:50%;
+  object-fit:cover; background:transparent;
+  animation: floaty 4s ease-in-out infinite;
+}
+@keyframes floaty {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
 
-  /* main scroll area (each tab fills viewport minus nav) */
-  main{
-    position:fixed; top:var(--nav-height); left:0; right:0; bottom:0; overflow:auto; -webkit-overflow-scrolling:touch;
-    background:transparent;
-  }
+/* ===== TAB 2 - Romantic ===== */
+#tab2 {
+  background: radial-gradient(circle at top left,#ffb6c1,#ffc0cb,#ffe4e1);
+  color: #5a2a2a;
+  position: relative;
+}
+#tab2 .story-box {
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 40px;
+  max-width: 600px;
+  text-align: center;
+  box-shadow:0 0 30px rgba(255,192,203,0.6);
+  z-index: 1;
+}
+#tab2 .story-box h2 {
+  font-size: 2em;
+  color: #c2185b;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow:0 0 5px #fff; }
+  to { text-shadow:0 0 20px #ff69b4,0 0 30px #ff69b4; }
+}
+#tab2 .hearts span {
+  position:absolute;
+  width:20px; height:20px;
+  background:url('https://upload.wikimedia.org/wikipedia/commons/5/57/Heart_symbol_red.svg');
+  background-size:cover;
+  animation: floatHearts 8s linear infinite;
+  opacity:0.6;
+}
+@keyframes floatHearts {
+  0% { transform: translateY(100vh) scale(0.5); opacity:0; }
+  50% { opacity:1; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity:0; }
+}
 
-  .tab{
-    min-height:calc(100vh - var(--nav-height));
-    width:100%;
-    display:none;
-    position:relative;
-    overflow:auto;
-  }
-  .tab.active{ display:block }
+/* ===== TAB 3 - AI Glitch ===== */
+#tab3 {
+  background: radial-gradient(circle at center,#0a0f29,#001f3f,#0b132b);
+  color: #00ffff;
+  overflow:hidden;
+}
+#tab3::before {
+  content:"";
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background: repeating-linear-gradient(
+    0deg, rgba(0,255,255,0.05) 0, rgba(0,255,255,0.05) 1px, transparent 1px, transparent 3px);
+  animation: flicker 2s linear infinite;
+}
+@keyframes flicker {
+  0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
+  20%,24%,55% {opacity:0.7;}
+}
+#tab3 .glitch-lines {
+  position:absolute; width:100%; height:100%;
+  background: repeating-linear-gradient(90deg, rgba(0,255,255,0.05) 0, rgba(0,255,255,0.05) 2px, transparent 2px, transparent 4px);
+  animation: glitchmove 5s linear infinite;
+}
+@keyframes glitchmove {
+  from {transform:translateX(0);}
+  to {transform:translateX(-100px);}
+}
+#tab3 .content {
+  z-index:1; text-align:center;
+}
+#tab3 video {
+  width:60%; border-radius:15px;
+  box-shadow:0 0 20px rgba(0,255,255,0.6);
+}
+#tab3 audio {
+  width:60%; margin-top:20px;
+  filter: drop-shadow(0 0 10px #00ffff);
+}
 
-  /* Direction-based animations
-     We'll add classes via JavaScript:
-     - .enter-left, .enter-right for the incoming tab
-     - .leave-left, .leave-right for the outgoing tab
-     They combine translateX, blur, and opacity */
-  .anim-base{ transition: none; will-change: transform, opacity, filter; }
-
-  /* incoming from left (we moved to the right: user navigated backward) */
-  .enter-left{ animation: enterLeft var(--transition-speed) cubic-bezier(.2,.9,.3,1) both; }
-  .enter-right{ animation: enterRight var(--transition-speed) cubic-bezier(.2,.9,.3,1) both; }
-  .leave-left{ animation: leaveLeft var(--transition-speed) cubic-bezier(.2,.9,.3,1) both; }
-  .leave-right{ animation: leaveRight var(--transition-speed) cubic-bezier(.2,.9,.3,1) both; }
-
-  @keyframes enterLeft{
-    0%{ transform:translateX(-14%) scale(.99); filter:blur(8px); opacity:0 }
-    60%{ transform:translateX(3%) scale(1.005); filter:blur(2px); opacity:1 }
-    100%{ transform:translateX(0) scale(1); filter:blur(0); opacity:1 }
-  }
-  @keyframes enterRight{
-    0%{ transform:translateX(14%) scale(.99); filter:blur(8px); opacity:0 }
-    60%{ transform:translateX(-3%) scale(1.005); filter:blur(2px); opacity:1 }
-    100%{ transform:translateX(0) scale(1); filter:blur(0); opacity:1 }
-  }
-  @keyframes leaveLeft{
-    0%{ transform:translateX(0) scale(1); filter:blur(0); opacity:1 }
-    100%{ transform:translateX(-12%) scale(.996); filter:blur(8px); opacity:0 }
-  }
-  @keyframes leaveRight{
-    0%{ transform:translateX(0) scale(1); filter:blur(0); opacity:1 }
-    100%{ transform:translateX(12%) scale(.996); filter:blur(8px); opacity:0 }
-  }
-
-  /* Utility containers for centered content */
-  .container{
-    max-width:1200px;margin:0 auto;padding:48px 28px;position:relative;z-index:5;
-  }
-
-  /* ---------------- TAB 1 — NEWS (RED) ---------------- */
-  #tab1{ background: linear-gradient(180deg,#fff7f8,#fff); color:#111; }
-
-  /* ticker and background stripes */
-  .ticker-wrap{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden }
-  .ticker{ position:absolute; top:12vh; left:-80%; white-space:nowrap; font-weight:900; font-family:Montserrat, sans-serif;
-           font-size:52px; color:rgba(196,30,58,0.08); letter-spacing:8px; transform:skewX(-12deg);
-           animation: tickerMove 18s linear infinite }
-  @keyframes tickerMove{ from{ left:-80% } to{ left:120% } }
-
-  .news-rayed{ position:absolute; inset:0; z-index:0; pointer-events:none }
-  .news-ray{ position:absolute; width:140%; height:120%; left:-20%; top:-10%; transform:rotate(-12deg);
-             background: linear-gradient(90deg, rgba(196,30,58,0.02) 0%, rgba(196,30,58,0.08) 40%, rgba(196,30,58,0.02) 100%);
-             filter: blur(22px); animation: rayShift 10s linear infinite; opacity:0.9 }
-  @keyframes rayShift{ 0%{ transform:translateX(-8%) rotate(-12deg) } 50%{ transform:translateX(8%) rotate(-12deg) } 100%{ transform:translateX(-8%) rotate(-12deg) } }
-
-  /* floating geometric shapes */
-  .geom{ position:absolute; border-radius:14px; opacity:0.12; filter:blur(10px); z-index:0; animation: geomFloat 14s ease-in-out infinite }
-  .g1{ width:300px;height:160px; left:6%; top:8%; background:linear-gradient(135deg,#ffd6d9,#ffe7e9) }
-  .g2{ width:220px;height:220px; right:6%; bottom:10%; background:linear-gradient(135deg,#ffdddd,#ffe6f0); animation-duration:18s }
-  @keyframes geomFloat{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-18px) } 100%{ transform:translateY(0) } }
-
-  /* camera flashes */
-  .cam-flash{ position:absolute; width:22px;height:22px;border-radius:6px; background:rgba(255,255,255,0.06); filter:blur(16px); z-index:0; animation: camBlink 5s linear infinite }
-  .cf1{ left:22%; top:14%; transform:rotate(14deg) }
-  .cf2{ right:22%; top:20%; transform:rotate(-6deg); animation-delay:1.2s }
-  @keyframes camBlink{ 0%{ opacity:0 } 6%{ opacity:.12 } 8%{ opacity:0 } 20%{ opacity:.02 } 100%{ opacity:0 } }
-
-  /* authors row */
-  .authors-row{ display:flex; gap:20px; justify-content:space-between; align-items:flex-start; max-width:1200px; margin:36px auto; z-index:2 }
-  .card{ background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.9)); border-radius:14px; padding:22px; text-align:center;
-         width:18%; box-shadow:0 28px 64px rgba(0,0,0,0.06); transition:transform .32s cubic-bezier(.2,.9,.3,1), box-shadow .28s }
-  .card:hover{ transform:translateY(-12px) scale(1.01); box-shadow:0 44px 110px rgba(196,30,58,0.08) }
-  .card img{ width:120px;height:120px;border-radius:50%;object-fit:contain;display:block;margin:0 auto; filter: drop-shadow(0 16px 30px rgba(0,0,0,0.08)); }
-  .card h3{ margin-top:12px; color:#222; font-weight:800; font-family:Montserrat, sans-serif; letter-spacing:.2px }
-  .card p{ margin-top:6px; color:var(--red); font-weight:700 }
-
-  /* anchor glow under images */
-  .card::after{
-    content:""; display:block;margin:12px auto 0;width:60px;height:6px;border-radius:999px;background:linear-gradient(90deg,rgba(196,30,58,0.18),rgba(255,0,90,0.06));
-    filter: blur(8px); opacity:0.9; transition: transform .28s;
-  }
-  .card:hover::after{ transform:scaleX(1.25); filter: blur(14px); opacity:1 }
-
-  /* ticker strip bottom */
-  .ticker-strip{ position:relative; z-index:2; margin-top:26px; background:linear-gradient(90deg, rgba(196,30,58,0.06), rgba(196,30,58,0.02));
-                padding:12px 18px; border-radius:12px; max-width:1100px; margin-left:auto; margin-right:auto; display:flex; align-items:center; gap:12px }
-  .ticker-strip .dot{ width:8px;height:8px;border-radius:50%;background:var(--red); box-shadow:0 8px 22px rgba(196,30,58,0.2) }
-  .ticker-strip span{ color:var(--red); font-weight:700; letter-spacing:1px }
-
-  /* ---------------- TAB 2 — PINK ROMANTIC ---------------- */
-  #tab2{ background: linear-gradient(135deg,#ffdff1,#ffe6f5); color:#222; overflow:hidden }
-
-  .heart{ position:absolute; font-size:34px; opacity:0.06; filter: blur(.2px); z-index:0; pointer-events:none; animation: heartFloat linear infinite }
-  .h1{ left:6%; bottom:8%; animation-duration:9s; animation-delay:0s }
-  .h2{ left:28%; bottom:14%; animation-duration:11s; animation-delay:2s }
-  .h3{ left:52%; bottom:10%; animation-duration:10s; animation-delay:1s }
-  .h4{ left:72%; bottom:16%; animation-duration:12s; animation-delay:0.5s }
-  .h5{ left:90%; bottom:6%; animation-duration:14s; animation-delay:3s }
-  @keyframes heartFloat{ 0%{ transform:translateY(0) scale(.96); opacity:.06 } 50%{ transform:translateY(-18px) scale(1.02); opacity:.28 } 100%{ transform:translateY(0) scale(.96); opacity:.06 } }
-
-  .sparkle{ position:absolute; width:10px;height:10px;border-radius:50%; background:var(--pink); box-shadow:0 0 16px var(--pink); opacity:.02; z-index:0; animation: sparkle 3s ease-in-out infinite; pointer-events:none }
-  .s1{ left:18%; top:18%; animation-delay:0s } .s2{ left:82%; top:26%; animation-delay:.6s } .s3{ left:36%; top:46%; animation-delay:1.2s } .s4{ left:66%; top:62%; animation-delay:.3s }
-  @keyframes sparkle{ 0%{ transform:scale(.2); opacity:0 } 50%{ transform:scale(1.4); opacity:.85 } 100%{ transform:scale(.2); opacity:0 } }
-
-  .quote-big{ text-align:center;color:var(--pink); font-weight:900; font-size:34px; margin-top:10vh; z-index:3; text-shadow:0 12px 24px rgba(255,255,255,0.5); animation: quotePulse 6s ease-in-out infinite }
-  @keyframes quotePulse{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-12px) } 100%{ transform:translateY(0) } }
-
-  .story-card{ max-width:840px;margin:36px auto;padding:40px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.94));
-              box-shadow:0 50px 110px rgba(214,40,150,0.08); color:#333; text-align:justify; z-index:3; transform-origin:center; animation: storyFloat 9s ease-in-out infinite }
-  @keyframes storyFloat{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-8px) } 100%{ transform:translateY(0) } }
-
-  .story-card h2{ color:var(--pink); text-align:center; margin-bottom:12px; font-weight:900 }
-  .story-card p{ line-height:1.8; color:#444; font-size:16px }
-
-  /* audio visualizer area */
-  .audio-area{ text-align:center; margin-top:22px; z-index:3 }
-  .audio-area audio{ width:78%; border-radius:12px; box-shadow:0 24px 46px rgba(214,40,150,0.12) }
-
-  /* small visualizer bars while playing */
-  .visualizer{ display:flex; gap:6px; align-items:end; justify-content:center; margin-top:12px }
-  .visualizer .bar{ width:6px; height:6px; background:linear-gradient(180deg,var(--pink), #ff83b9); border-radius:3px; transform-origin:bottom; transition:height .12s linear; opacity:0.9 }
-  .audio-playing .bar.h1{ height:28px }
-  .audio-playing .bar.h2{ height:22px }
-  .audio-playing .bar.h3{ height:34px }
-  .audio-playing .bar.h4{ height:18px }
-  .audio-playing .bar.h5{ height:26px }
-
-  /* ---------------- TAB 3 — AI GLITCH (BLUE) ---------------- */
-  #tab3{ background: linear-gradient(120deg,#001224,#002b4d); color:#dfefff; overflow:hidden }
-
-  .grid{ position:absolute; inset:0; z-index:0; opacity:0.12; background-image:
-         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
-         linear-gradient(0deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-         background-size:60px 60px; animation: gridPan 18s linear infinite; transform-origin:center; }
-  @keyframes gridPan{ from{ background-position:0 0 } to{ background-position:240px 240px } }
-
-  .binary{ position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-  .bin-col{ position:absolute; bottom:100%; width:2px; height:120%; background:linear-gradient(180deg, transparent, rgba(0,180,255,0.14));
-            animation: binFall linear infinite; opacity:.7; filter:blur(1px) }
-  /* many columns with different delays */
-  .bin1{ left:8%; animation-duration:3.2s; animation-delay:0s }
-  .bin2{ left:18%; animation-duration:3.8s; animation-delay:0.7s }
-  .bin3{ left:28%; animation-duration:3.4s; animation-delay:0.4s }
-  .bin4{ left:38%; animation-duration:4s; animation-delay:1s }
-  .bin5{ left:48%; animation-duration:3.6s; animation-delay:0.2s }
-  .bin6{ left:58%; animation-duration:3.9s; animation-delay:0.6s }
-  .bin7{ left:68%; animation-duration:3.3s; animation-delay:1.2s }
-  .bin8{ left:78%; animation-duration:3.7s; animation-delay:0.3s }
-  .bin9{ left:88%; animation-duration:3.5s; animation-delay:0.9s }
-
-  @keyframes binFall{ 0%{ transform:translateY(-110%) } 100%{ transform:translateY(110%) } }
-
-  .scanline{ position:absolute; left:0; right:0; height:2px; top:40%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation: scan 4s linear infinite; z-index:0; opacity:.35 }
-  @keyframes scan{ 0%{ top:0% } 100%{ top:100% } }
-
-  .ai-orb{ position:absolute; filter:blur(60px); opacity:0.14; z-index:0; pointer-events:none; animation: orbPulse 8s ease-in-out infinite }
-  .orb1{ width:460px;height:460px; left:6%; top:6%; background:radial-gradient(circle,#00b4ff, transparent) }
-  .orb2{ width:300px;height:300px; right:6%; bottom:6%; background:radial-gradient(circle,#005fd6, transparent) }
-  @keyframes orbPulse{ 0%{ transform:scale(.96) } 50%{ transform:scale(1.06) } 100%{ transform:scale(.96) } }
-
-  .ai-card{ max-width:980px;margin:72px auto;padding:28px;border-radius:14px;background:linear-gradient(180deg, rgba(0,6,14,0.48), rgba(0,6,14,0.36));backdrop-filter:blur(6px);box-shadow:0 40px 100px rgba(0,0,0,0.6); position:relative; z-index:2; border:1px solid rgba(255,255,255,0.02) }
-  .ai-card p{ text-align:center; color:#cfefff; margin-bottom:14px }
-  .video-box{ border-radius:12px; overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,0.6) }
-  video{ width:100%; height:auto; display:block; background:#000 }
-
-  /* responsive */
-  @media (max-width:980px){
-    .authors-row{ gap:14px; padding:0 12px; display:flex; flex-wrap:wrap; justify-content:center }
-    .card{ width:46%; margin-bottom:18px }
-    .story-card{ margin:28px 12px; padding:28px }
-    .ai-card{ margin:22px 12px }
-    .quote-big{ font-size:26px }
-  }
-  @media (max-width:640px){
-    .card{ width:90% }
-    .audio-area audio{ width:96% }
-    .authors-row{ gap:12px }
-  }
+/* Floating binary rain */
+#tab3 .binary span {
+  position:absolute; color:rgba(0,255,255,0.3);
+  font-size:12px;
+  animation: rain 8s linear infinite;
+}
+@keyframes rain {
+  0% { transform: translateY(-10vh); opacity:0; }
+  50% { opacity:1; }
+  100% { transform: translateY(100vh); opacity:0; }
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <button class="tab-btn active" id="btn1" data-theme="red" aria-controls="tab1">
-    <svg class="icon" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M3 5h18v2H3z"/><path d="M3 9h10v2H3z"/><path d="M3 13h18v6H3z"/></svg>
-    <span>News</span>
-  </button>
-
-  <button class="tab-btn" id="btn2" data-theme="pink" aria-controls="tab2">
-    <svg class="icon" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-4.35-9-7.01C-1.46 9.34 6.11 3 12 8.09 17.89 3 25.46 9.34 21 13.99 19 16.65 12 21 12 21z"/></svg>
-    <span>Story</span>
-  </button>
-
-  <button class="tab-btn" id="btn3" data-theme="blue" aria-controls="tab3">
-    <svg class="icon" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v2"/><path d="M6 4l1.4 1.4"/><path d="M18 4l-1.4 1.4"/><path d="M12 20v2"/><circle cx="12" cy="12" r="4"/></svg>
-    <span>Podcast</span>
-  </button>
+  <button onclick="openTab(1)">📰 Tab 1: Authors</button>
+  <button onclick="openTab(2)">💞 Tab 2: Story</button>
+  <button onclick="openTab(3)">🤖 Tab 3: Podcast</button>
 </nav>
 
-<main>
-  <!-- TAB 1 -->
-  <section id="tab1" class="tab active" role="region" aria-labelledby="btn1">
-    <div class="ticker-wrap" aria-hidden="true"><div class="ticker">LIVE • SPECIAL REPORT • BROADCAST • LIVE • SPECIAL REPORT</div></div>
-    <div class="news-rayed" aria-hidden="true">
-      <div class="news-ray"></div>
-    </div>
-    <div class="geom g1" aria-hidden="true"></div>
-    <div class="geom g2" aria-hidden="true"></div>
-    <div class="cam-flash cf1" aria-hidden="true"></div>
-    <div class="cam-flash cf2" aria-hidden="true"></div>
+<section id="tab1" class="tab active">
+  <h1 style="margin-top:80px;font-size:2.2em;">Breaking Minds: The Creative Team</h1>
+  <div class="authors-row" style="margin-top:40px;">
+    <div class="author-card"><img src="author1.png"><h3>John Saimon</h3><p>Developer</p></div>
+    <div class="author-card"><img src="author2.png"><h3>Aizy Dacles</h3><p>Graphics</p></div>
+    <div class="author-card"><img src="author3.png"><h3>Francis Bandojo</h3><p>Writer</p></div>
+    <div class="author-card"><img src="author4.png"><h3>Yunize Lista</h3><p>Host</p></div>
+    <div class="author-card"><img src="author5.png"><h3>Vynz Tusit</h3><p>Host</p></div>
+  </div>
+</section>
 
-    <div class="container">
-      <div class="news-head" role="banner">
-        <h2 style="font-family:Montserrat, sans-serif; letter-spacing:1px">LATEST BROADCAST</h2>
-        <p style="color:#666; margin-top:8px">Studio lineup — anchors, hosts, and creatives</p>
-      </div>
+<section id="tab2" class="tab">
+  <div class="hearts">
+    <span style="left:10%;animation-delay:0s;"></span>
+    <span style="left:30%;animation-delay:2s;"></span>
+    <span style="left:50%;animation-delay:4s;"></span>
+    <span style="left:70%;animation-delay:1s;"></span>
+    <span style="left:90%;animation-delay:3s;"></span>
+  </div>
+  <div class="story-box">
+    <h2>It all started with a "hello"</h2>
+    <p style="margin-top:20px;">He was quiet, observant, lost in his thoughts. She was bright, warm, and curious. A simple greeting became the spark that changed both their worlds. This is the story of an introvert and an extrovert who found rhythm in silence and melody in words.</p>
+    <audio controls>
+      <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+    </audio>
+  </div>
+</section>
 
-      <div class="authors-row" role="list" aria-label="Authors">
-        <div class="card" role="listitem">
-          <img src="author1.png" alt="John Saimon Gabriel P. Novenario">
-          <h3>John S. Novenario</h3>
-          <p>Website Developer</p>
-        </div>
-
-        <div class="card" role="listitem">
-          <img src="author2.png" alt="Aizy Dacles">
-          <h3>Aizy Dacles</h3>
-          <p>Graphics Designer</p>
-        </div>
-
-        <div class="card" role="listitem">
-          <img src="author3.png" alt="Francis Bandojo">
-          <h3>Francis Bandojo</h3>
-          <p>Script Writer</p>
-        </div>
-
-        <div class="card" role="listitem">
-          <img src="author4.png" alt="Yunize Yael Lista">
-          <h3>Yunize Y. Lista</h3>
-          <p>Podcast Host</p>
-        </div>
-
-        <div class="card" role="listitem">
-          <img src="author5.png" alt="Vynz Gabrielle Tusit">
-          <h3>Vynz G. Tusit</h3>
-          <p>Podcast Host</p>
-        </div>
-      </div>
-
-      <div class="ticker-strip" aria-hidden="true">
-        <div class="dot"></div>
-        <span>TOP STORY: AI IN ACCOUNTING • SPECIAL EPISODE OUT NOW</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- TAB 2 -->
-  <section id="tab2" class="tab" role="region" aria-labelledby="btn2">
-    <div class="heart h1" aria-hidden="true">💕</div><div class="heart h2" aria-hidden="true">💖</div>
-    <div class="heart h3" aria-hidden="true">💗</div><div class="heart h4" aria-hidden="true">💓</div><div class="heart h5" aria-hidden="true">💝</div>
-    <div class="sparkle s1" aria-hidden="true"></div><div class="sparkle s2" aria-hidden="true"></div>
-    <div class="sparkle s3" aria-hidden="true"></div><div class="sparkle s4" aria-hidden="true"></div>
-
-    <div class="container">
-      <div class="quote-big" aria-hidden="false">“It all started with a hello.”</div>
-
-      <article class="story-card" role="article">
-        <h2 style="font-weight:900">The Introvert &amp; The Hello</h2>
-        <p>
-          He was the kind of guy who found comfort in silence. His world was made of soft lights,
-          unspoken words, and pages filled with thoughts never sent. Until one afternoon, a simple "hello" broke the quiet.
-        </p>
-        <p>
-          It wasn't dramatic — just a word. Yet, it lingered, echoed, and softened the walls he had built.
-          That one word became the start of everything — a friendship, a warmth, a change he never saw coming.
-        </p>
-        <p>
-          Sometimes, it doesn't take much. Just courage to say hello… and someone who says it back.
-        </p>
-
-        <div class="audio-area" aria-label="audio">
-          <audio id="story-audio" controls preload="none">
-            <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
-            Your browser does not support audio.
-          </audio>
-
-          <div id="visualizer" class="visualizer" aria-hidden="true">
-            <div class="bar h1"></div>
-            <div class="bar h2"></div>
-            <div class="bar h3"></div>
-            <div class="bar h4"></div>
-            <div class="bar h5"></div>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- TAB 3 -->
-  <section id="tab3" class="tab" role="region" aria-labelledby="btn3">
-    <div class="grid" aria-hidden="true"></div>
-    <div class="scanline" aria-hidden="true"></div>
-    <div class="binary" aria-hidden="true">
-      <div class="bin-col bin1"></div><div class="bin-col bin2"></div><div class="bin-col bin3"></div>
-      <div class="bin-col bin4"></div><div class="bin-col bin5"></div><div class="bin-col bin6"></div>
-      <div class="bin-col bin7"></div><div class="bin-col bin8"></div><div class="bin-col bin9"></div>
-    </div>
-    <div class="ai-orb orb1" aria-hidden="true"></div>
-    <div class="ai-orb orb2" aria-hidden="true"></div>
-
-    <div class="container">
-      <div class="ai-card" role="region" aria-label="podcast">
-        <p style="margin-bottom:10px; text-align:center; color:rgba(255,255,255,0.82)">
-          (AI ambient visual — press play to view the podcast)
-        </p>
-
-        <div class="video-box" style="border-radius:12px; overflow:hidden">
-          <video controls preload="metadata">
-            <source src="podcast.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+<section id="tab3" class="tab">
+  <div class="glitch-lines"></div>
+  <div class="binary">
+    <span style="left:5%;animation-delay:0s;">010101</span>
+    <span style="left:20%;animation-delay:1s;">101010</span>
+    <span style="left:40%;animation-delay:2s;">001101</span>
+    <span style="left:60%;animation-delay:3s;">110011</span>
+    <span style="left:80%;animation-delay:4s;">011010</span>
+  </div>
+  <div class="content">
+    <h1>AI Podcast: The Future of Accountants</h1>
+    <video controls poster="">
+      <source src="podcast.mp4" type="video/mp4">
+    </video>
+    <audio controls>
+      <source src="ai-theme.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+</section>
 
 <script>
-  // Tab logic + direction-based transitions
-  const btns = [document.getElementById('btn1'), document.getElementById('btn2'), document.getElementById('btn3')];
-  const tabs = [document.getElementById('tab1'), document.getElementById('tab2'), document.getElementById('tab3')];
-  let currentIndex = 0; // start on tab1
-
-  // helper to clear animation classes
-  function clearAnim(el){
-    el.classList.remove('enter-left','enter-right','leave-left','leave-right');
-  }
-
-  function setActive(index){
-    if(index === currentIndex) return;
-    const prevIndex = currentIndex;
-    const direction = index > prevIndex ? 'right' : 'left'; // moving forward = right; back = left
-    // UI: update buttons
-    btns.forEach((b,i)=> b.classList.toggle('active', i===index));
-    // animation: outgoing tab gets leave-X, incoming gets enter-X
-    const outgoing = tabs[prevIndex];
-    const incoming = tabs[index];
-
-    // remove any leftover classes
-    [outgoing, incoming].forEach(clearAnim);
-
-    // add leaving & entering classes
-    if(direction === 'right'){ // move forward: old slides left, new enters from right
-      outgoing.classList.add('leave-left');
-      incoming.classList.add('enter-right');
-    } else { // backward: old slides right, new enters from left
-      outgoing.classList.add('leave-right');
-      incoming.classList.add('enter-left');
-    }
-
-    // actually toggle visibility after a tiny delay to ensure animations apply
-    // keep both visible while animations run
-    outgoing.classList.remove('active');
-    incoming.classList.add('active');
-
-    // cleanup after animation duration
-    setTimeout(()=>{
-      clearAnim(outgoing);
-      clearAnim(incoming);
-    }, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--transition-speed')) || 820);
-
-    // audio pause logic: if leaving story tab, pause audio
-    const audio = document.getElementById('story-audio');
-    if(prevIndex === 1 && audio && !audio.paused) audio.pause();
-
-    currentIndex = index;
-    // reset scroll to top of main area
-    const main = document.querySelector('main');
-    main.scrollTo({top:0, left:0, behavior:'smooth'});
-  }
-
-  btns.forEach((btn, i)=>{
-    btn.addEventListener('click', ()=> setActive(i));
-  });
-
-  // keyboard 1/2/3 support
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === '1') setActive(0);
-    if(e.key === '2') setActive(1);
-    if(e.key === '3') setActive(2);
-  });
-
-  // Audio visualizer behavior for Tab 2:
-  const storyAudio = document.getElementById('story-audio');
-  const visualizer = document.getElementById('visualizer');
-  const audioContainer = document.querySelector('.audio-area');
-
-  // Simpler visualizer: animate classes when playing
-  function updateVisualizerPlaying(isPlaying){
-    if(isPlaying){
-      audioContainer.classList.add('audio-playing');
-      visualizer.setAttribute('aria-hidden','false');
-      // also pulse the quote
-      document.querySelector('.quote-big').style.textShadow = '0 16px 40px rgba(255,255,255,0.6), 0 0 40px rgba(214,40,150,0.18)';
-    } else {
-      audioContainer.classList.remove('audio-playing');
-      visualizer.setAttribute('aria-hidden','true');
-      document.querySelector('.quote-big').style.textShadow = '0 12px 24px rgba(255,255,255,0.5)';
-    }
-  }
-
-  storyAudio && storyAudio.addEventListener('play', ()=> updateVisualizerPlaying(true));
-  storyAudio && storyAudio.addEventListener('pause', ()=> updateVisualizerPlaying(false));
-  storyAudio && storyAudio.addEventListener('ended', ()=> updateVisualizerPlaying(false));
-
-  // pause audio when leaving the story tab (already handled in setActive), but also observe tab changes
-  const observer = new MutationObserver(()=>{
-    const storyTabActive = document.getElementById('tab2').classList.contains('active');
-    if(!storyTabActive && storyAudio && !storyAudio.paused) storyAudio.pause();
-  });
-  observer.observe(document.body, { attributes:true, subtree:true, attributeFilter:['class'] });
-
-  // small improvement: respect reduced motion preference
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(prefersReduced){
-    // disable heavy animations
-    document.querySelectorAll('.card').forEach(c=> c.style.animation = 'none');
-    document.querySelectorAll('.geom, .news-ray, .cam-flash, .heart, .sparkle, .ai-orb, .bin-col, .ticker').forEach(el=> el.style.animation = 'none');
-  }
+let current = 1;
+function openTab(n) {
+  if(n===current) return;
+  const cur = document.getElementById('tab'+current);
+  const next = document.getElementById('tab'+n);
+  if(n>current){cur.classList.add('to-left');}
+  else{cur.classList.add('to-right');}
+  setTimeout(()=>{cur.classList.remove('active','to-left','to-right');},800);
+  next.classList.add('active');
+  current = n;
+}
 </script>
 </body>
 </html>
