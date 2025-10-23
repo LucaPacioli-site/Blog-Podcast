@@ -1,255 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog and Podcast</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>When Machines Take the Ledger — Blog & Podcast</title>
+
+  <!--
+    Full single-file site:
+    - Tab 1: Publication-style Authors (2 on top / 3 bottom). Transparent PNG photos (no box).
+    - Tab 2: Story "Hello" — dreamy introvert meets girl after a single "hello".
+      Includes floating quote, soft particle bokeh, and optional audio narrator (controls shown).
+    - Tab 3: AI / Podcast — futuristic neon theme, embedded MP4 and description.
+  -->
 
   <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      overflow-x: hidden;
+    /* ==========================
+       VARIABLES & GLOBAL RESET
+       ========================== */
+    :root{
+      --neon: #00f0e6;
+      --neon-dim: rgba(0,240,230,0.12);
+      --bg-dark: #0b1116;
+      --muted: #bfc9d1;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.06);
+      --accent: #7df3ff;
+      --max-width: 1100px;
+      --radius: 14px;
+      --fw-strong: 700;
+      --transition: 280ms cubic-bezier(.2,.9,.3,1);
     }
 
-    header {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      text-align: center;
-      padding: 25px;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      color: #00ffff;
-      text-transform: uppercase;
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #071018 0%, #0b1116 45%, #0b1216 100%);
+      color: var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      overflow-y:auto;
     }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: rgba(0,0,0,0.4);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    a{color:var(--neon);text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ==========================
+       HEADER & NAV
+       ========================== */
+    header{
+      width:100%;
+      padding:22px 18px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      position:sticky;top:0;z-index:60;
+      backdrop-filter: blur(6px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    nav button {
-      background: none;
-      color: #00ffff;
-      border: none;
-      padding: 14px 20px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s ease;
+    header h1{
+      font-size:18px;
+      color:var(--neon);
+      letter-spacing:1px;
+      font-weight:800;
+      text-transform:uppercase;
     }
 
-    nav button:hover {
-      color: #111;
-      background: #00ffff;
-      border-radius: 20px;
+    nav{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin:18px auto 0;
     }
 
-    .tab {
-      display: none;
-      padding: 40px;
-      animation: fadeIn 1s ease-in-out;
-      min-height: 80vh;
+    .nav-btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,0.04);
+      background:transparent;
+      color:var(--neon);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:600;
+      transition:var(--transition);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .nav-btn:hover{transform:translateY(-2px); background:linear-gradient(90deg, rgba(0,240,230,0.06), rgba(0,240,230,0.02)); color:#081217}
+    .nav-btn.active{ background: linear-gradient(90deg, rgba(0,240,230,0.14), rgba(0,240,230,0.06)); color:#001019; border:1px solid rgba(0,240,230,0.35)}
+
+    /* ==========================
+       TAB LAYOUT
+       ========================== */
+    main{max-width:var(--max-width);margin:28px auto;padding:0 18px;min-height:70vh}
+    .tab{display:none}
+    .tab.active{display:block;animation:fadeIn 420ms ease both}
+
+    @keyframes fadeIn{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* ==========================
+       TAB 1 — Authors (Publication)
+       ========================== */
+    #authors{
+      position:relative;padding:36px 18px 80px;
+      overflow:hidden;
+      border-radius:20px;
+      background:
+        radial-gradient(800px 300px at 10% 10%, rgba(0,240,230,0.03), transparent 6%),
+        linear-gradient(180deg, rgba(7,11,16,0.6), rgba(2,4,6,0.3));
+      box-shadow: 0 10px 30px rgba(3,6,8,0.7), inset 0 1px 0 rgba(255,255,255,0.01);
     }
 
-    .active {
-      display: block;
+    /* decorative floating abstract shapes */
+    .authors-bg-shape{
+      position:absolute;
+      width:420px;height:420px;border-radius:50%;
+      background:linear-gradient(145deg, rgba(125,243,255,0.06), rgba(0,240,230,0.02));
+      top:-80px;left:-140px; filter:blur(36px); transform:rotate(20deg); z-index:0;
+      animation: driftA 16s ease-in-out infinite;
+    }
+    .authors-bg-shape.two{
+      width:300px;height:300px; right:-100px; top:-60px; left:auto; filter:blur(28px); transform:rotate(-10deg);
+      animation: driftB 14s ease-in-out infinite;
+    }
+    @keyframes driftA{ 0%{transform:translateY(0) rotate(20deg)}50%{transform:translateY(18px) rotate(18deg)}100%{transform:translateY(0) rotate(20deg)}}
+    @keyframes driftB{ 0%{transform:translateY(-6px) rotate(-10deg)}50%{transform:translateY(20px) rotate(-12deg)}100%{transform:translateY(-6px) rotate(-10deg)} }
+
+    #authors .section-head{
+      display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:2;margin-bottom:20px;
+    }
+    #authors .section-head small{color:rgba(255,255,255,0.18);font-size:13px}
+    #authors h2{color:var(--neon);letter-spacing:0.6px;font-size:20px}
+
+    /* Publication grid: 2 across top, 3 bottom (responsive) */
+    .pub-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:28px;
+      align-items:start;
+      width:100%;
+      max-width:1000px;
+      margin:18px auto 0;
+      position:relative;z-index:2;
     }
 
-    /* Authors Layout */
-    .authors {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      justify-items: center;
-      margin: 40px auto;
-      max-width: 800px;
+    /* For the "2 top / 3 bottom" structure we'll create first two cards in first row with explicit placement */
+    .pub-top{display:contents}
+    .pub-bottom{display:flex;justify-content:center;gap:22px;margin-top:18px;flex-wrap:wrap}
+
+    /* author card (no boxed image) */
+    .author-card{
+      display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 6px;
+      transition:transform var(--transition), filter var(--transition);
+      background: transparent;
     }
 
-    .authors-bottom {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 25px;
+    .author-card .photo{
+      width:170px;height:170px;
+      /* expecting transparent PNGs so we don't set a background */
+      object-fit:contain;
+      border-radius:6px; /* small rounding for aesthetics */
+      filter: drop-shadow(0 18px 36px rgba(0,0,0,0.6)) drop-shadow(0 0 12px rgba(0,240,230,0.08));
+      transition:filter var(--transition), transform var(--transition);
+      transform-origin:center;
+    }
+    .author-card:hover .photo{ transform:translateY(-6px) scale(1.03); filter:drop-shadow(0 26px 48px rgba(0,0,0,0.7)) drop-shadow(0 0 28px rgba(0,240,230,0.18)); }
+    .author-card h3{margin-top:12px;color:var(--neon);font-size:16px}
+    .author-card p.role{color:rgba(255,255,255,0.6);font-size:13px;margin-top:6px}
+    .author-card p.bio{font-size:13px;color:rgba(255,255,255,0.45);margin-top:8px;max-width:210px}
+
+    /* subtle divider and publication meta */
+    .pub-meta{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:24px;color:rgba(255,255,255,0.12);font-size:13px}
+    .pub-meta .pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02)}
+
+    /* ==========================
+       TAB 2 — Story "Hello" (Introvert Theme)
+       ========================== */
+    #content{
+      position:relative;
+      padding:46px 18px 120px;
+      border-radius:20px;
+      overflow:hidden;
+      margin-top:18px;
+      background: linear-gradient(180deg, rgba(8,13,18,0.6), rgba(4,6,8,0.55));
+      box-shadow: 0 10px 30px rgba(2,3,6,0.6);
     }
 
-    .author-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,255,255,0.2);
-      text-align: center;
-      width: 220px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* dreamy bokeh / particles */
+    .bokeh {
+      pointer-events:none;
+      position:absolute;
+      inset:0;
+      z-index:0;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.02) 0 2%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255,200,255,0.02) 0 2%, transparent 30%),
+        radial-gradient(circle at 60% 20%, rgba(0,240,230,0.02) 0 2%, transparent 30%),
+        radial-gradient(circle at 30% 60%, rgba(255,255,255,0.015) 0 2%, transparent 30%);
+      mix-blend-mode: screen;
+      transform: translateZ(0);
     }
 
-    .author-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 25px rgba(0,255,255,0.5);
+    .content-hero{
+      max-width:920px;margin:26px auto;position:relative;z-index:2;
+      display:grid;gap:22px;
+      grid-template-columns:1fr;
     }
 
-    .author-card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-      border: 2px solid #00ffff;
+    .quote-float{
+      text-align:center;color:var(--neon);font-weight:800;font-size:28px;
+      letter-spacing:0.2px;
+      text-shadow:0 6px 28px rgba(0,240,230,0.12);
+      margin-bottom:6px;
+      animation: floatQuote 5s ease-in-out infinite;
+    }
+    @keyframes floatQuote{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+
+    .story-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      border-radius:16px;
+      padding:26px;
+      color: #e8eef6;
+      box-shadow: 0 16px 40px rgba(2,6,10,0.6);
+      backdrop-filter: blur(6px);
+      font-size:16px;
+      line-height:1.7;
     }
 
-    h2, h3 {
-      color: #00ffff;
+    .story-card .lead{font-style:italic;color:rgba(255,255,255,0.9);margin-bottom:12px}
+    .story-card p{margin-bottom:12px;color:rgba(255,255,255,0.87);}
+
+    /* small subtle hearts / particles */
+    .hearts {
+      position:absolute;right:-20px;top:20px;z-index:1;pointer-events:none;
+      width:160px;height:160px;opacity:0.06;filter:blur(4px);
+      background-image:
+        radial-gradient(circle at 10% 35%, rgba(255,110,180,0.45) 0 6%, transparent 20%),
+        radial-gradient(circle at 80% 45%, rgba(125,243,255,0.18) 0 6%, transparent 20%);
+      transform: rotate(8deg);
     }
 
-    /* Blog Content Section */
-    .content-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(0,255,255,0.3);
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 3px 15px rgba(0,255,255,0.2);
-      max-width: 800px;
-      margin: 30px auto;
-      transition: 0.3s ease;
+    .story-controls{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:8px}
+    .story-controls audio{width:280px;border-radius:10px;outline:none}
+
+    /* ==========================
+       TAB 3 — Podcast & AI Theme
+       ========================== */
+    #podcast{
+      position:relative;padding:36px 18px 80px;margin-top:18px;border-radius:18px;
+      background: radial-gradient(circle at 10% 10%, rgba(0,240,230,0.03), transparent 4%), linear-gradient(180deg,#00040a,#000814);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.7);
+      overflow:hidden;
     }
 
-    .content-box:hover {
-      transform: scale(1.02);
-      box-shadow: 0 3px 20px rgba(0,255,255,0.4);
+    /* moving grid overlay */
+    .grid-overlay{
+      position:absolute;inset:0;z-index:0;opacity:0.07;background-image:
+      linear-gradient(90deg, rgba(0,240,230,0.06) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(0,240,230,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: panGrid 12s linear infinite;
+    }
+    @keyframes panGrid{ from{background-position:0 0} to{background-position:120px 120px} }
+
+    .podcast-wrap{position:relative;z-index:2;max-width:920px;margin:14px auto;display:grid;gap:18px}
+    .podcast-head{display:flex;flex-direction:column;gap:6px;align-items:center;color:var(--neon)}
+    .podcast-head h2{font-size:20px;color:var(--neon);text-shadow:0 0 14px rgba(0,240,230,0.12)}
+
+    .podcast-player{
+      border-radius:12px;padding:18px;background:linear-gradient(180deg, rgba(0,240,230,0.02), rgba(0,240,230,0.01));
+      border:1px solid rgba(0,240,230,0.06);
+      box-shadow: 0 10px 30px rgba(0,240,230,0.03);
     }
 
-    .neon-text {
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff, 0 0 20px #00cccc;
-    }
+    .podcast-player video{width:100%;height:auto;border-radius:8px;display:block}
 
-    audio, video {
-      width: 100%;
-      margin-top: 15px;
-      border-radius: 10px;
-    }
+    .podcast-desc{margin-top:12px;color:rgba(255,255,255,0.8);font-size:15px;line-height:1.6}
 
-    video {
-      box-shadow: 0 3px 20px rgba(0,255,255,0.3);
+    /* ==========================
+       RESPONSIVE
+       ========================== */
+    @media (max-width:880px){
+      .pub-grid{grid-template-columns:1fr}
+      .pub-bottom{gap:12px}
+      .author-card .photo{width:150px;height:150px}
+      .quote-float{font-size:22px}
+      .story-card{padding:20px}
+    }
+    @media (max-width:460px){
+      header h1{font-size:15px}
+      .nav-btn{padding:8px 10px;font-size:13px}
+      .author-card .photo{width:132px;height:132px}
+      .quote-float{font-size:18px}
+      .story-controls audio{width:200px}
     }
 
   </style>
 </head>
-
 <body>
-  <header>🤖 When Machines Take the Ledger</header>
+  <header>
+    <h1>WHEN MACHINES TAKE THE LEDGER</h1>
+  </header>
 
-  <nav>
-    <button onclick="openTab('authors')">Tab 1: Authors</button>
-    <button onclick="openTab('content')">Tab 2: Blog Content</button>
-    <button onclick="openTab('podcast')">Tab 3: Podcast</button>
+  <nav style="display:flex;gap:12px;justify-content:center;padding:14px 12px">
+    <button class="nav-btn active" data-tab="authors">Tab 1 · Authors</button>
+    <button class="nav-btn" data-tab="content">Tab 2 · Hello (Story)</button>
+    <button class="nav-btn" data-tab="podcast">Tab 3 · Podcast (AI)</button>
   </nav>
 
-  <!-- TAB 1: AUTHORS -->
-  <section id="authors" class="tab active">
-    <h2>👨‍💻 Meet the Authors & Editors</h2>
-    <p style="text-align:center;">Get to know the brilliant minds behind this AI-driven project ✨</p>
+  <main>
+    <!-- =========================
+         TAB 1 - AUTHORS / PUBLICATION
+         ========================= -->
+    <section id="authors" class="tab active" aria-labelledby="authors-head">
+      <div class="authors-bg-shape" aria-hidden="true"></div>
+      <div class="authors-bg-shape two" aria-hidden="true"></div>
 
-    <div class="authors">
-      <div class="author-card">
-        <img src="author1.jpg">
-        <h3>John Saimon Gabriel P. Novenario</h3>
-        <p><strong>Website Developer</strong></p>
-        <p>Innovator behind the digital transformation of our blog ⚙️</p>
+      <div class="section-head">
+        <small>Publication • 2nd Quarter Edition</small>
+        <h2 id="authors-head">Meet the Publication Team</h2>
+        <div class="pub-meta" aria-hidden="true">
+          <div class="pill">Editorial</div>
+          <div class="pill">Design</div>
+          <div class="pill">Podcast</div>
+        </div>
       </div>
 
-      <div class="author-card">
-        <img src="author2.jpg">
-        <h3>Aizy Dacles</h3>
-        <p><strong>Graphics Designer</strong></p>
-        <p>Crafts futuristic visuals that mirror the rise of AI 🎨</p>
-      </div>
-    </div>
+      <!-- Top two authors -->
+      <div class="pub-grid">
+        <div class="pub-top">
+          <div class="author-card">
+            <!-- Use transparent PNG (author1.png) so no background box appears -->
+            <img class="photo" src="author1.png" alt="John Saimon Gabriel P. Novenario" />
+            <h3>John Saimon Gabriel P. Novenario</h3>
+            <p class="role">Website Developer</p>
+            <p class="bio">Lead developer and creative technical writer focused on bridging storytelling and code.</p>
+          </div>
 
-    <div class="authors-bottom">
-      <div class="author-card">
-        <img src="author3.jpg">
-        <h3>Francis Bandojo</h3>
-        <p><strong>Author & Script Writer</strong></p>
-        <p>Creates impactful narratives blending humans and machines 🧠</p>
-      </div>
-
-      <div class="author-card">
-        <img src="author4.jpg">
-        <h3>Yunize Yael Lista</h3>
-        <p><strong>Podcast Host</strong></p>
-        <p>Brings tech discussions to life with engaging storytelling 🎤</p>
+          <div class="author-card">
+            <img class="photo" src="author2.png" alt="Aizy Dacles" />
+            <h3>Aizy Dacles</h3>
+            <p class="role">Graphics Designer</p>
+            <p class="bio">Designs the visuals and layout language used across this publication.</p>
+          </div>
+        </div>
       </div>
 
-      <div class="author-card">
-        <img src="author5.jpg">
-        <h3>Vynz Gabrielle Tusit</h3>
-        <p><strong>Podcast Host</strong></p>
-        <p>Leads thought-provoking talks about the AI revolution 💬</p>
+      <!-- Bottom three authors (centered) -->
+      <div class="pub-bottom" role="list" aria-label="Other team members">
+        <div class="author-card" role="listitem">
+          <img class="photo" src="author3.png" alt="Francis Bandojo" />
+          <h3>Francis Bandojo</h3>
+          <p class="role">Author & Script Writer</p>
+        </div>
+
+        <div class="author-card" role="listitem">
+          <img class="photo" src="author4.png" alt="Yunize Yael Lista" />
+          <h3>Yunize Yael Lista</h3>
+          <p class="role">Podcast Host</p>
+        </div>
+
+        <div class="author-card" role="listitem">
+          <img class="photo" src="author5.png" alt="Vynz Gabrielle Tusit" />
+          <h3>Vynz Gabrielle Tusit</h3>
+          <p class="role">Podcast Host</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TAB 2: CONTENT -->
-  <section id="content" class="tab">
-    <h2 class="neon-text">🧠 Blog Post: “When Machines Take the Ledger”</h2>
-    <p style="text-align:center;">Exploring how Artificial Intelligence is redefining the accounting landscape.</p>
+    <!-- =========================
+         TAB 2 - STORY "HELLO" (INTROVERT THEME)
+         ========================= -->
+    <section id="content" class="tab" aria-labelledby="story-head">
+      <div class="bokeh" aria-hidden="true"></div>
+      <div class="hearts" aria-hidden="true"></div>
 
-    <div class="content-box">
-      <h3>📊 The Rise of AI Accountants</h3>
-      <p>
-        As automation accelerates, accounting systems evolve into intelligent platforms capable of
-        detecting patterns, predicting trends, and preventing fraud faster than any human ever could.
-        The efficiency and precision of AI make it a powerful ally — or a potential replacement.
-      </p>
-      <p>
-        Yet, behind every algorithm lies a human question: <em>Can technology truly understand ethics, empathy, or accountability?</em>
-      </p>
-    </div>
+      <div class="content-hero">
+        <div class="quote-float">It all started with a "Hello."</div>
 
-    <div class="content-box">
-      <h3>🔊 Voice Reader</h3>
-      <audio controls>
-        <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
-      </audio>
-    </div>
-  </section>
+        <article class="story-card" aria-labelledby="story-head">
+          <h2 id="story-head" style="color:var(--neon);text-align:center;margin-bottom:12px">Hello</h2>
 
-  <!-- TAB 3: PODCAST -->
-  <section id="podcast" class="tab">
-    <h2 class="neon-text">🎧 AI & The Future of Accounting — Podcast</h2>
-    <p style="text-align:center;">A deep conversation about how automation is transforming the accounting world.</p>
+          <p class="lead">The morning was folded in the quiet way that mornings for introverts often are — soft, cautious, and careful not to disturb the shape of the world.</p>
 
-    <div class="content-box">
-      <video controls>
-        <source src="podcast-video.mp4" type="video/mp4">
-      </video>
-      <p style="margin-top:10px;">
-        In this episode, our hosts discuss how AI-driven analytics are reshaping the accounting profession,
-        what skills will matter in the next decade, and whether the human touch can ever be replaced.
-      </p>
-    </div>
-  </section>
+          <p>He had rehearsed nothing. For weeks he had carried drafts of greetings like fragile notes in his chest, practiced smiles in the mirror that always felt slightly false. On the other side of the road she was simply there: a tilt of the head, a loose scarf, a book with edges softened by use.</p>
+
+          <p>He walked past pretending the air and pavement were distractions and not opportunities. He moved as if he were already late. Then — like a pebble nudging awake a still pond — she looked up and said the simplest sound he had ever heard from anyone: "Hello."</p>
+
+          <p>That word, ordinary and small, opened a door he thought permanently locked. Conversation unfurled slowly, like a reel of light unspooling. He surprised himself by answering. Her laugh was patient; it made room. No fireworks, no pretensions — only the stranger warmth that arrives when two people meet without performance.</p>
+
+          <p>They spoke about unremarkable things at first: the weather, a line from the book she carried, a café that always used almond milk. He discovered in those small exchanges a peculiar currency — words that cost nothing but offered everything. It did not feel like a sudden movie moment; it felt instead like a careful re-tuning of the world where a simple hello was enough to ask for company.</p>
+
+          <p>By the time the day tilted toward evening, he realized how quickly a small bravely spoken thing can reroute a life. Thereafter, every hello mattered. Not because it solved everything, but because it reminded him that the world still had soft spaces for quiet people to be seen.</p>
+
+          <p style="font-size:14px;color:rgba(255,255,255,0.6);margin-top:14px">— A short piece about small beginnings and the courage of saying something simple.</p>
+        </article>
+
+        <!-- optional audio narrator with controls (user can play/stop) -->
+        <div class="story-controls" aria-hidden="false">
+          <audio controls preload="none">
+            <!-- replace with your narrator audio (mp3) if available -->
+            <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <!-- small CTA -->
+          <a href="#" style="display:inline-block;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--neon);text-decoration:none;font-weight:600">Download</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         TAB 3 - PODCAST / AI FUTURISTIC THEME
+         ========================= -->
+    <section id="podcast" class="tab" aria-labelledby="podcast-head">
+      <div class="grid-overlay" aria-hidden="true"></div>
+
+      <div class="podcast-wrap">
+        <div class="podcast-head">
+          <h2 id="podcast-head">AI & The Future of Accounting — Podcast</h2>
+          <small style="color:rgba(255,255,255,0.4)">Episode 3 · When Machines Take the Ledger</small>
+        </div>
+
+        <div class="podcast-player">
+          <video controls preload="metadata">
+            <!-- replace with actual MP4 -->
+            <source src="podcast-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+
+          <div class="podcast-desc" style="margin-top:12px">
+            <p>
+              In this episode, our hosts discuss the rapid rise of AI in accounting — from automated audits
+              to predictive analytics. We explore which skills will remain uniquely human, what tasks are
+              likely to be automated, and how professionals can adapt. Is the ledger a machine's next territory,
+              or will human judgment still hold the pen?
+            </p>
+            <p style="margin-top:8px;color:rgba(255,255,255,0.6)">Hosts: Yunize Yael Lista &amp; Vynz Gabrielle Tusit • Produced by the editorial team</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    function openTab(tabName) {
-      const tabs = document.getElementsByClassName("tab");
-      for (let tab of tabs) tab.classList.remove("active");
-      document.getElementById(tabName).classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    // Tab switching
+    const buttons = document.querySelectorAll('.nav-btn');
+    const tabs = document.querySelectorAll('.tab');
+
+    function setActive(tabName){
+      // nav buttons
+      buttons.forEach(b=>{
+        if(b.dataset.tab === tabName){ b.classList.add('active') } else { b.classList.remove('active') }
+      });
+      // tabs
+      tabs.forEach(t=>{
+        if(t.id === tabName){ t.classList.add('active') } else { t.classList.remove('active') }
+      });
+      // scroll to top of main
+      window.scrollTo({top:0,behavior:'smooth'});
     }
+
+    buttons.forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const tab = btn.dataset.tab;
+        setActive(tab);
+      });
+    });
+
+    // Accessibility: allow switching tabs via keyboard numbers 1-3
+    document.addEventListener('keydown', (e) => {
+      if(e.key === '1') setActive('authors');
+      if(e.key === '2') setActive('content');
+      if(e.key === '3') setActive('podcast');
+    });
+
+    // Small enhancement: if audio is present on story tab, pause it when leaving the tab
+    const storyAudio = document.querySelector('#content audio');
+    const observer = new MutationObserver(() => {
+      const isActive = document.querySelector('#content').classList.contains('active');
+      if(!isActive && storyAudio && !storyAudio.paused){
+        storyAudio.pause();
+      }
+    });
+    observer.observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
   </script>
 </body>
 </html>
