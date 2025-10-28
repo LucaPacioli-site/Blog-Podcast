@@ -1,254 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Creative Blog & Podcast</title>
-<style>
-* {
-  margin: 0; padding: 0; box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-body, html {
-  width: 100%; height: 100%; overflow: hidden;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog and Podcast</title>
 
-/* Fixed top nav */
-nav {
-  position: fixed;
-  top: 0; left: 0; width: 100%;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  display: flex; justify-content: center;
-  z-index: 1000;
-}
-nav button {
-  background: none; border: none;
-  padding: 15px 25px; cursor: pointer;
-  font-weight: 600; font-size: 16px;
-  transition: 0.3s;
-}
-nav button:hover { color: white; background: #4a90e2; border-radius: 20px; }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* Tabs base */
-.tab {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  opacity: 0; transform: translateX(100%);
-  transition: transform 0.8s ease, opacity 0.8s ease;
-  overflow: hidden;
-}
-.tab.active {
-  opacity: 1; transform: translateX(0);
-  z-index: 10;
-}
-.tab.to-left { transform: translateX(-100%); opacity:0; }
-.tab.to-right { transform: translateX(100%); opacity:0; }
+    body {
+      font-family: "Poppins", sans-serif;
+      overflow-x: hidden;
+      color: white;
+    }
 
-/* ===== TAB 1 - News Section ===== */
-#tab1 {
-  background: linear-gradient(120deg,#ff4d4d,#b30000);
-  overflow: hidden;
-  color: white;
-}
-#tab1::before {
-  content:"";
-  position:absolute; width:200%; height:200%;
-  background: repeating-linear-gradient(
-    -45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 2px,
-    transparent 2px, transparent 8px);
-  animation: ticker 8s linear infinite;
-}
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.authors-row {
-  display: flex; justify-content: center; gap: 25px;
-  flex-wrap: nowrap;
-  position: relative; z-index: 1;
-}
-.author-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(8px);
-  padding: 20px; border-radius: 15px;
-  width: 180px; text-align:center;
-  transition: 0.3s; position: relative;
-}
-.author-card:hover { transform: scale(1.05); box-shadow:0 0 20px rgba(255,255,255,0.6); }
-.author-card img {
-  width:100px; height:100px; border-radius:50%;
-  object-fit:cover; background:transparent;
-  animation: floaty 4s ease-in-out infinite;
-}
-@keyframes floaty {
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-10px);}
-}
+    /* Header / Navigation Bar */
+    nav {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      padding: 10px;
+    }
 
-/* ===== TAB 2 - Romantic ===== */
-#tab2 {
-  background: radial-gradient(circle at top left,#ffb6c1,#ffc0cb,#ffe4e1);
-  color: #5a2a2a;
-  position: relative;
-}
-#tab2 .story-box {
-  background: rgba(255,255,255,0.4);
-  backdrop-filter: blur(10px);
-  border-radius: 25px;
-  padding: 40px;
-  max-width: 600px;
-  text-align: center;
-  box-shadow:0 0 30px rgba(255,192,203,0.6);
-  z-index: 1;
-}
-#tab2 .story-box h2 {
-  font-size: 2em;
-  color: #c2185b;
-  animation: glow 2s ease-in-out infinite alternate;
-}
-@keyframes glow {
-  from { text-shadow:0 0 5px #fff; }
-  to { text-shadow:0 0 20px #ff69b4,0 0 30px #ff69b4; }
-}
-#tab2 .hearts span {
-  position:absolute;
-  width:20px; height:20px;
-  background:url('https://upload.wikimedia.org/wikipedia/commons/5/57/Heart_symbol_red.svg');
-  background-size:cover;
-  animation: floatHearts 8s linear infinite;
-  opacity:0.6;
-}
-@keyframes floatHearts {
-  0% { transform: translateY(100vh) scale(0.5); opacity:0; }
-  50% { opacity:1; }
-  100% { transform: translateY(-10vh) scale(1.2); opacity:0; }
-}
+    nav button {
+      background: none;
+      color: #222;
+      border: none;
+      padding: 14px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      margin: 0 5px;
+    }
 
-/* ===== TAB 3 - AI Glitch ===== */
-#tab3 {
-  background: radial-gradient(circle at center,#0a0f29,#001f3f,#0b132b);
-  color: #00ffff;
-  overflow:hidden;
-}
-#tab3::before {
-  content:"";
-  position:absolute; top:0; left:0; width:100%; height:100%;
-  background: repeating-linear-gradient(
-    0deg, rgba(0,255,255,0.05) 0, rgba(0,255,255,0.05) 1px, transparent 1px, transparent 3px);
-  animation: flicker 2s linear infinite;
-}
-@keyframes flicker {
-  0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
-  20%,24%,55% {opacity:0.7;}
-}
-#tab3 .glitch-lines {
-  position:absolute; width:100%; height:100%;
-  background: repeating-linear-gradient(90deg, rgba(0,255,255,0.05) 0, rgba(0,255,255,0.05) 2px, transparent 2px, transparent 4px);
-  animation: glitchmove 5s linear infinite;
-}
-@keyframes glitchmove {
-  from {transform:translateX(0);}
-  to {transform:translateX(-100px);}
-}
-#tab3 .content {
-  z-index:1; text-align:center;
-}
-#tab3 video {
-  width:60%; border-radius:15px;
-  box-shadow:0 0 20px rgba(0,255,255,0.6);
-}
-#tab3 audio {
-  width:60%; margin-top:20px;
-  filter: drop-shadow(0 0 10px #00ffff);
-}
+    nav button:hover {
+      background: #4a90e2;
+      color: #fff;
+      transform: scale(1.1);
+    }
 
-/* Floating binary rain */
-#tab3 .binary span {
-  position:absolute; color:rgba(0,255,255,0.3);
-  font-size:12px;
-  animation: rain 8s linear infinite;
-}
-@keyframes rain {
-  0% { transform: translateY(-10vh); opacity:0; }
-  50% { opacity:1; }
-  100% { transform: translateY(100vh); opacity:0; }
-}
-</style>
+    /* Tab content */
+    .tab {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------------- TAB 1: NEWS STYLE ---------------- */
+    #authors {
+      background: linear-gradient(135deg, #ff4d4d, #b30000);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #authors::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://i.ibb.co/sqVCV3v/news-bg.gif') center/cover no-repeat;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    #authors h2 {
+      font-size: 2.5em;
+      z-index: 2;
+      text-transform: uppercase;
+      color: white;
+      text-shadow: 0 0 15px black;
+    }
+
+    .authors {
+      display: flex;
+      gap: 20px;
+      z-index: 2;
+      margin-top: 30px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 20px;
+    }
+
+    .author-card {
+      flex: 0 0 auto;
+      text-align: center;
+      color: #fff;
+      transition: transform 0.3s;
+    }
+
+    .author-card:hover {
+      transform: scale(1.1);
+    }
+
+    .author-card img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: none;
+    }
+
+    /* ---------------- TAB 2: LOVE STORY STYLE ---------------- */
+    #content {
+      background: linear-gradient(135deg, #ff9eb5, #ffc3de);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #content::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://i.ibb.co/dQPrPQg/romantic-bg.gif') center/cover no-repeat;
+      opacity: 0.4;
+      z-index: 0;
+      animation: floatHearts 10s infinite alternate ease-in-out;
+    }
+
+    @keyframes floatHearts {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-30px); }
+    }
+
+    #content h2 {
+      font-size: 2.3em;
+      z-index: 2;
+      color: #fff;
+      text-shadow: 0 0 10px #ff007f;
+    }
+
+    .content-box {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      border-radius: 25px;
+      text-align: center;
+      max-width: 700px;
+      z-index: 2;
+      color: #fff;
+      animation: floatIn 2s ease-in-out;
+    }
+
+    @keyframes floatIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    audio {
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    /* ---------------- TAB 3: CORRUPTION FLOOD SCANDAL ---------------- */
+    #podcast {
+      background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* BG Animation Elements */
+    #podcast::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.ibb.co/vLZyYp4/corruption-bg.gif') center/cover no-repeat;
+      opacity: 0.25;
+      z-index: 0;
+      animation: glitchPulse 2s infinite;
+    }
+
+    @keyframes glitchPulse {
+      0% { filter: hue-rotate(0deg) brightness(1); }
+      50% { filter: hue-rotate(20deg) brightness(1.5); }
+      100% { filter: hue-rotate(-20deg) brightness(1); }
+    }
+
+    /* Animated text in the background */
+    .corruption-text {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      font-size: 4em;
+      color: rgba(255,0,0,0.15);
+      white-space: nowrap;
+      font-weight: 800;
+      text-transform: uppercase;
+      transform: translateY(-50%);
+      animation: scrollText 15s linear infinite;
+      z-index: 0;
+      text-shadow: 0 0 15px red;
+    }
+
+    @keyframes scrollText {
+      0% { left: 100%; }
+      100% { left: -200%; }
+    }
+
+    /* Flag */
+    .flag {
+      position: absolute;
+      top: 10%;
+      right: 5%;
+      width: 180px;
+      animation: wave 4s infinite ease-in-out;
+      z-index: 1;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* Justice Icon Animation */
+    .justice-scale {
+      position: absolute;
+      bottom: 10%;
+      left: 10%;
+      width: 120px;
+      opacity: 0.8;
+      animation: floatJustice 3s infinite alternate ease-in-out;
+      z-index: 1;
+    }
+
+    @keyframes floatJustice {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-15px); }
+    }
+
+    /* Spotlight movement */
+    .spotlight {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,0,0,0.25), transparent 80%);
+      animation: moveLight 5s infinite alternate ease-in-out;
+      z-index: 1;
+    }
+
+    @keyframes moveLight {
+      0% { top: 10%; left: 15%; }
+      100% { top: 60%; left: 70%; }
+    }
+
+    #podcast h2 {
+      font-size: 2.5em;
+      z-index: 2;
+      color: #ff4444;
+      text-shadow: 0 0 20px #ff0000;
+    }
+
+    .video-box {
+      z-index: 2;
+      margin-top: 30px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 20px;
+      max-width: 800px;
+      box-shadow: 0 0 20px rgba(255,0,0,0.5);
+      text-align: center;
+    }
+
+    .video-box video {
+      width: 100%;
+      border-radius: 15px;
+    }
+
+  </style>
 </head>
 <body>
 
-<nav>
-  <button onclick="openTab(1)">📰 Tab 1: Authors</button>
-  <button onclick="openTab(2)">💞 Tab 2: Story</button>
-  <button onclick="openTab(3)">🤖 Tab 3: Podcast</button>
-</nav>
+  <nav>
+    <button onclick="openTab('authors')">Tab 1: Authors</button>
+    <button onclick="openTab('content')">Tab 2: Content</button>
+    <button onclick="openTab('podcast')">Tab 3: Scandal</button>
+  </nav>
 
-<section id="tab1" class="tab active">
-  <h1 style="margin-top:80px;font-size:2.2em;">Breaking Minds: The Creative Team</h1>
-  <div class="authors-row" style="margin-top:40px;">
-    <div class="author-card"><img src="author1.png"><h3>John Saimon</h3><p>Developer</p></div>
-    <div class="author-card"><img src="author2.png"><h3>Aizy Dacles</h3><p>Graphics</p></div>
-    <div class="author-card"><img src="author3.png"><h3>Francis Bandojo</h3><p>Writer</p></div>
-    <div class="author-card"><img src="author4.png"><h3>Yunize Lista</h3><p>Host</p></div>
-    <div class="author-card"><img src="author5.png"><h3>Vynz Tusit</h3><p>Host</p></div>
-  </div>
-</section>
+  <!-- TAB 1 -->
+  <section id="authors" class="tab active">
+    <h2>📢 Broadcasting Team</h2>
+    <div class="authors">
+      <div class="author-card"><img src="author1.png"><h3>John Saimon Novenario</h3><p>Lead Writer</p></div>
+      <div class="author-card"><img src="author2.png"><h3>Aizy Dacles</h3><p>Graphics Designer</p></div>
+      <div class="author-card"><img src="author3.png"><h3>Francis Bandojo</h3><p>Researcher</p></div>
+      <div class="author-card"><img src="author4.png"><h3>Yunize Yael Lista</h3><p>Podcast Host</p></div>
+      <div class="author-card"><img src="author5.png"><h3>Vynz Gabrielle Tusit</h3><p>Co-Host</p></div>
+    </div>
+  </section>
 
-<section id="tab2" class="tab">
-  <div class="hearts">
-    <span style="left:10%;animation-delay:0s;"></span>
-    <span style="left:30%;animation-delay:2s;"></span>
-    <span style="left:50%;animation-delay:4s;"></span>
-    <span style="left:70%;animation-delay:1s;"></span>
-    <span style="left:90%;animation-delay:3s;"></span>
-  </div>
-  <div class="story-box">
-    <h2>It all started with a "hello"</h2>
-    <p style="margin-top:20px;">He was quiet, observant, lost in his thoughts. She was bright, warm, and curious. A simple greeting became the spark that changed both their worlds. This is the story of an introvert and an extrovert who found rhythm in silence and melody in words.</p>
-    <audio controls>
-      <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
-    </audio>
-  </div>
-</section>
+  <!-- TAB 2 -->
+  <section id="content" class="tab">
+    <h2>💞 A Story That Started With “Hello”</h2>
+    <div class="content-box">
+      <p>
+        He was quiet, she was full of light.  
+        Their worlds collided with just one word — “Hello.”  
+        A story of how two strangers found connection in the silence of the world.  
+        Sometimes, the smallest words make the biggest difference.
+      </p>
+      <audio controls>
+        <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </section>
 
-<section id="tab3" class="tab">
-  <div class="glitch-lines"></div>
-  <div class="binary">
-    <span style="left:5%;animation-delay:0s;">010101</span>
-    <span style="left:20%;animation-delay:1s;">101010</span>
-    <span style="left:40%;animation-delay:2s;">001101</span>
-    <span style="left:60%;animation-delay:3s;">110011</span>
-    <span style="left:80%;animation-delay:4s;">011010</span>
-  </div>
-  <div class="content">
-    <h1>AI Podcast: The Future of Accountants</h1>
-    <video controls poster="">
-      <source src="podcast.mp4" type="video/mp4">
-    </video>
-    <audio controls>
-      <source src="ai-theme.mp3" type="audio/mpeg">
-    </audio>
-  </div>
-</section>
+  <!-- TAB 3 -->
+  <section id="podcast" class="tab">
+    <div class="corruption-text">Ikulong na Yan mga Kurakot! Ikulong na Yan mga Kurakot!</div>
+    <img class="flag" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg" alt="PH Flag">
+    <img class="justice-scale" src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Scales_of_Justice.svg" alt="Justice">
+    <div class="spotlight"></div>
 
-<script>
-let current = 1;
-function openTab(n) {
-  if(n===current) return;
-  const cur = document.getElementById('tab'+current);
-  const next = document.getElementById('tab'+n);
-  if(n>current){cur.classList.add('to-left');}
-  else{cur.classList.add('to-right');}
-  setTimeout(()=>{cur.classList.remove('active','to-left','to-right');},800);
-  next.classList.add('active');
-  current = n;
-}
-</script>
+    <h2>💀 Corruption: The Flood Control Scandal</h2>
+    <div class="video-box">
+      <video controls>
+        <source src="podcast.mp4" type="video/mp4">
+      </video>
+      <p>Uncover the truth behind the misuse of public funds and the flood of lies beneath the surface.</p>
+    </div>
+  </section>
+
+  <script>
+    function openTab(tabName) {
+      const tabs = document.getElementsByClassName("tab");
+      for (let tab of tabs) tab.classList.remove("active");
+      document.getElementById(tabName).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
 </body>
 </html>
