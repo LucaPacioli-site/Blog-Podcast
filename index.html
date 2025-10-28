@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Podcast</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -12,10 +13,12 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       font-family: "Poppins", sans-serif;
-      overflow-x: hidden;
+      overflow: hidden;
       color: white;
+      height: 100vh;
+      width: 100vw;
     }
 
     /* Header / Navigation Bar */
@@ -25,15 +28,16 @@
       top: 0;
       display: flex;
       justify-content: center;
-      background: rgba(255,255,255,0.2);
+      background: rgba(30, 30, 30, 0.95);
       backdrop-filter: blur(10px);
       z-index: 999;
       padding: 10px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
     nav button {
       background: none;
-      color: #222;
+      color: #fff;
       border: none;
       padding: 14px 20px;
       cursor: pointer;
@@ -45,9 +49,8 @@
     }
 
     nav button:hover {
-      background: #4a90e2;
-      color: #fff;
-      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
     }
 
     /* Tab content */
@@ -55,13 +58,15 @@
       display: none;
       height: 100vh;
       width: 100vw;
-      position: relative;
-      overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
       animation: fadeIn 0.8s ease-in-out;
     }
 
-    .active {
-      display: block;
+    .tab.active {
+      display: flex;
     }
 
     @keyframes fadeIn {
@@ -69,237 +74,481 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ---------------- TAB 1: NEWS STYLE ---------------- */
+    /* ---------------- TAB 1: EDITORIAL NEWS STYLE ---------------- */
     #authors {
-      background: linear-gradient(135deg, #ff4d4d, #b30000);
-      display: flex;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      text-align: center;
+      padding: 100px 20px 40px;
+      position: relative;
     }
 
     #authors::before {
       content: "";
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://i.ibb.co/sqVCV3v/news-bg.gif') center/cover no-repeat;
-      opacity: 0.2;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.03) 2px,
+          rgba(255, 255, 255, 0.03) 4px
+        );
       z-index: 0;
     }
 
-    #authors h2 {
-      font-size: 2.5em;
+    .editorial-header {
+      text-align: center;
       z-index: 2;
+      margin-bottom: 40px;
+      border-bottom: 3px solid #e94560;
+      padding-bottom: 20px;
+      max-width: 1200px;
+      width: 90%;
+    }
+
+    .editorial-header h1 {
+      font-size: 3em;
+      color: #fff;
       text-transform: uppercase;
-      color: white;
-      text-shadow: 0 0 15px black;
+      letter-spacing: 3px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .editorial-header .tagline {
+      font-size: 1.2em;
+      color: #e94560;
+      font-weight: 600;
+      font-style: italic;
     }
 
     .authors {
-      display: flex;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
       z-index: 2;
-      margin-top: 30px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      max-width: 1200px;
+      width: 90%;
       padding: 20px;
     }
 
     .author-card {
-      flex: 0 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(233, 69, 96, 0.3);
+      border-radius: 15px;
+      padding: 25px;
       text-align: center;
-      color: #fff;
-      transition: transform 0.3s;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .author-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(233, 69, 96, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .author-card:hover::before {
+      left: 100%;
     }
 
     .author-card:hover {
-      transform: scale(1.1);
+      transform: translateY(-10px);
+      border-color: #e94560;
+      box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
     }
 
     .author-card img {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      object-fit: contain;
-      background: none;
+      object-fit: cover;
+      border: 3px solid #e94560;
+      margin-bottom: 15px;
     }
 
-    /* ---------------- TAB 2: LOVE STORY STYLE ---------------- */
+    .author-card h3 {
+      font-size: 1.2em;
+      color: #fff;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .author-card .role {
+      color: #e94560;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ---------------- TAB 2: INTROVERT VS EXTROVERT ---------------- */
     #content {
-      background: linear-gradient(135deg, #ff9eb5, #ffc3de);
-      display: flex;
-      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      justify-content: flex-start;
       align-items: center;
       position: relative;
       flex-direction: column;
-      overflow: hidden;
+      overflow-y: auto;
+      padding: 100px 20px 40px;
     }
 
     #content::before {
       content: "";
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://i.ibb.co/dQPrPQg/romantic-bg.gif') center/cover no-repeat;
-      opacity: 0.4;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+      opacity: 0.3;
       z-index: 0;
-      animation: floatHearts 10s infinite alternate ease-in-out;
     }
 
-    @keyframes floatHearts {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-30px); }
-    }
-
-    #content h2 {
-      font-size: 2.3em;
-      z-index: 2;
-      color: #fff;
-      text-shadow: 0 0 10px #ff007f;
-    }
-
-    .content-box {
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(15px);
-      padding: 30px;
-      border-radius: 25px;
+    .content-header {
       text-align: center;
-      max-width: 700px;
       z-index: 2;
-      color: #fff;
-      animation: floatIn 2s ease-in-out;
+      margin-bottom: 30px;
     }
 
-    @keyframes floatIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    .content-header h1 {
+      font-size: 2.8em;
+      color: #fff;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      margin-bottom: 15px;
+    }
+
+    .content-nav {
+      display: flex;
+      gap: 15px;
+      z-index: 2;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .content-nav button {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      padding: 12px 25px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-radius: 25px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .content-nav button:hover,
+    .content-nav button.active-section {
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .content-section {
+      display: none;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 40px;
+      border-radius: 25px;
+      max-width: 900px;
+      width: 90%;
+      z-index: 2;
+      color: #fff;
+      animation: slideUp 0.5s ease-in-out;
+      margin-bottom: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .content-section.active-section {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .content-section h2 {
+      font-size: 2.2em;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .content-section p {
+      line-height: 1.9;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     audio {
       margin-top: 20px;
       width: 100%;
+      max-width: 500px;
     }
 
-    /* ---------------- TAB 3: CORRUPTION FLOOD SCANDAL ---------------- */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .info-item h3 {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .comment-form {
+      margin-bottom: 30px;
+    }
+
+    .comment-form input,
+    .comment-form textarea {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-family: "Poppins", sans-serif;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .comment-form input::placeholder,
+    .comment-form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .comment-form button {
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid white;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .comment-form button:hover {
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+    }
+
+    .comments-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .comment {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .comment-author {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .comment-text {
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .comment-time {
+      font-size: 0.8em;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    /* ---------------- TAB 3: CORRUPTION SCANDAL DARK ---------------- */
     #podcast {
-      background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-      display: flex;
-      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      justify-content: flex-start;
       align-items: center;
       flex-direction: column;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
       color: white;
+      padding: 100px 20px 40px;
     }
 
-    /* BG Animation Elements */
     #podcast::before {
       content: "";
       position: absolute;
       width: 100%;
       height: 100%;
-      background: url('https://i.ibb.co/vLZyYp4/corruption-bg.gif') center/cover no-repeat;
-      opacity: 0.25;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03) 0px,
+        rgba(255, 0, 0, 0.03) 2px,
+        transparent 2px,
+        transparent 4px
+      );
       z-index: 0;
-      animation: glitchPulse 2s infinite;
     }
 
-    @keyframes glitchPulse {
-      0% { filter: hue-rotate(0deg) brightness(1); }
-      50% { filter: hue-rotate(20deg) brightness(1.5); }
-      100% { filter: hue-rotate(-20deg) brightness(1); }
+    .corruption-badge {
+      position: absolute;
+      top: 120px;
+      right: 5%;
+      background: rgba(255, 0, 0, 0.2);
+      border: 3px solid #ff4444;
+      padding: 15px 25px;
+      border-radius: 50%;
+      font-size: 0.9em;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #ff4444;
+      animation: pulse 2s infinite;
+      z-index: 2;
     }
 
-    /* Animated text in the background */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+    }
+
     .corruption-text {
       position: absolute;
-      top: 50%;
+      top: 15%;
       left: 100%;
-      font-size: 4em;
-      color: rgba(255,0,0,0.15);
+      font-size: 2.5em;
+      color: rgba(255, 0, 0, 0.1);
       white-space: nowrap;
       font-weight: 800;
       text-transform: uppercase;
-      transform: translateY(-50%);
-      animation: scrollText 15s linear infinite;
+      animation: scrollText 20s linear infinite;
       z-index: 0;
-      text-shadow: 0 0 15px red;
+      text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
     }
 
     @keyframes scrollText {
       0% { left: 100%; }
-      100% { left: -200%; }
+      100% { left: -100%; }
     }
 
-    /* Flag */
     .flag {
       position: absolute;
-      top: 10%;
-      right: 5%;
-      width: 180px;
+      top: 12%;
+      left: 5%;
+      width: 150px;
+      opacity: 0.7;
       animation: wave 4s infinite ease-in-out;
       z-index: 1;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
     }
 
     @keyframes wave {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(3deg); }
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
     }
 
-    /* Justice Icon Animation */
-    .justice-scale {
-      position: absolute;
-      bottom: 10%;
-      left: 10%;
-      width: 120px;
-      opacity: 0.8;
-      animation: floatJustice 3s infinite alternate ease-in-out;
-      z-index: 1;
-    }
-
-    @keyframes floatJustice {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-15px); }
-    }
-
-    /* Spotlight movement */
-    .spotlight {
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(255,0,0,0.25), transparent 80%);
-      animation: moveLight 5s infinite alternate ease-in-out;
-      z-index: 1;
-    }
-
-    @keyframes moveLight {
-      0% { top: 10%; left: 15%; }
-      100% { top: 60%; left: 70%; }
-    }
-
-    #podcast h2 {
-      font-size: 2.5em;
+    .scandal-header {
+      text-align: center;
       z-index: 2;
+      margin-bottom: 40px;
+    }
+
+    .scandal-header h1 {
+      font-size: 3em;
       color: #ff4444;
-      text-shadow: 0 0 20px #ff0000;
+      text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+      margin-bottom: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .scandal-header .subtitle {
+      font-size: 1.2em;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 400;
     }
 
     .video-box {
       z-index: 2;
       margin-top: 30px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      padding: 30px;
       border-radius: 20px;
-      max-width: 800px;
-      box-shadow: 0 0 20px rgba(255,0,0,0.5);
+      max-width: 900px;
+      width: 90%;
+      box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
       text-align: center;
+      border: 2px solid rgba(255, 68, 68, 0.3);
     }
 
     .video-box video {
       width: 100%;
       border-radius: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-box p {
+      margin-top: 20px;
+      line-height: 1.8;
+      font-size: 1.1em;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    @media (max-width: 768px) {
+      nav button {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+
+      .editorial-header h1,
+      .content-header h1,
+      .scandal-header h1 {
+        font-size: 2em;
+      }
+
+      .corruption-text {
+        font-size: 1.5em;
+      }
+
+      .flag {
+        width: 100px;
+      }
+
+      .authors {
+        grid-template-columns: 1fr;
+      }
     }
 
   </style>
@@ -307,61 +556,183 @@
 <body>
 
   <nav>
-    <button onclick="openTab('authors')">Tab 1: Authors</button>
-    <button onclick="openTab('content')">Tab 2: Content</button>
-    <button onclick="openTab('podcast')">Tab 3: Scandal</button>
+    <button onclick="openTab('authors')">📰 Editorial</button>
+    <button onclick="openTab('content')">🤝 Personality</button>
+    <button onclick="openTab('podcast')">⚠️ Scandal</button>
   </nav>
 
-  <!-- TAB 1 -->
+  <!-- TAB 1: EDITORIAL SECTION -->
   <section id="authors" class="tab active">
-    <h2>📢 Broadcasting Team</h2>
+    <div class="editorial-header">
+      <h1>Editorial Board</h1>
+      <p class="tagline">"Delivering Truth, Inspiring Change"</p>
+    </div>
     <div class="authors">
-      <div class="author-card"><img src="author1.png"><h3>John Saimon Novenario</h3><p>Lead Writer</p></div>
-      <div class="author-card"><img src="author2.png"><h3>Aizy Dacles</h3><p>Graphics Designer</p></div>
-      <div class="author-card"><img src="author3.png"><h3>Francis Bandojo</h3><p>Researcher</p></div>
-      <div class="author-card"><img src="author4.png"><h3>Yunize Yael Lista</h3><p>Podcast Host</p></div>
-      <div class="author-card"><img src="author5.png"><h3>Vynz Gabrielle Tusit</h3><p>Co-Host</p></div>
+      <div class="author-card">
+        <img src="author1.png" alt="John Saimon Novenario">
+        <h3>John Saimon Novenario</h3>
+        <p class="role">Lead Writer</p>
+      </div>
+      <div class="author-card">
+        <img src="author2.png" alt="Aizy Dacles">
+        <h3>Aizy Dacles</h3>
+        <p class="role">Graphics Designer</p>
+      </div>
+      <div class="author-card">
+        <img src="author3.png" alt="Francis Bandojo">
+        <h3>Francis Bandojo</h3>
+        <p class="role">Researcher</p>
+      </div>
+      <div class="author-card">
+        <img src="author4.png" alt="Yunize Yael Lista">
+        <h3>Yunize Yael Lista</h3>
+        <p class="role">Podcast Host</p>
+      </div>
+      <div class="author-card">
+        <img src="author5.png" alt="Vynz Gabrielle Tusit">
+        <h3>Vynz Gabrielle Tusit</h3>
+        <p class="role">Co-Host</p>
+      </div>
     </div>
   </section>
 
-  <!-- TAB 2 -->
+  <!-- TAB 2: INTROVERT VS EXTROVERT -->
   <section id="content" class="tab">
-    <h2>💞 A Story That Started With “Hello”</h2>
-    <div class="content-box">
-      <p>
-        He was quiet, she was full of light.  
-        Their worlds collided with just one word — “Hello.”  
-        A story of how two strangers found connection in the silence of the world.  
-        Sometimes, the smallest words make the biggest difference.
+    <div class="content-header">
+      <h1>🤝 Introvert Meets Extrovert</h1>
+    </div>
+    
+    <div class="content-nav">
+      <button onclick="openContentSection('info')" class="active-section">📋 Story Info</button>
+      <button onclick="openContentSection('blog')">💌 Read Story</button>
+      <button onclick="openContentSection('comments')">💬 Comments</button>
+    </div>
+
+    <!-- Info Section -->
+    <div id="info" class="content-section active-section">
+      <h2>About This Story</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <h3>🎭 Theme</h3>
+          <p>Opposites Attract</p>
+        </div>
+        <div class="info-item">
+          <h3>📅 Published</h3>
+          <p>October 28, 2025</p>
+        </div>
+        <div class="info-item">
+          <h3>⏱️ Reading Time</h3>
+          <p>5 minutes</p>
+        </div>
+        <div class="info-item">
+          <h3>🎵 Featured Song</h3>
+          <p>"Multo" by Cup of Joe</p>
+        </div>
+      </div>
+      <p style="margin-top: 30px; text-align: center; font-size: 1.15em;">
+        A heartwarming tale of two different souls finding connection. When quiet meets loud, magic happens.
       </p>
-      <audio controls>
-        <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
-      </audio>
+    </div>
+
+    <!-- Blog Post Section -->
+    <div id="blog" class="content-section">
+      <h2>💞 A Story That Started With "Hello"</h2>
+      <p>
+        <strong>He was the introvert</strong> — quiet corners, books over parties, silence as comfort.<br><br>
+        <strong>She was the extrovert</strong> — bright smiles, laughter that filled rooms, energy that never dimmed.<br><br>
+        Their worlds collided with just one word: <em>"Hello."</em><br><br>
+        What started as a simple greeting became a journey of understanding. He taught her the beauty of stillness. She showed him the joy of living out loud.<br><br>
+        Sometimes, the smallest words make the biggest difference. And sometimes, the most unlikely people become the most important ones.
+      </p>
+      <div style="text-align: center;">
+        <audio controls>
+          <source src="Multo - Cup of Joe (Official Lyric Video).mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div id="comments" class="content-section">
+      <h2>💬 Reader Comments</h2>
+      <div class="comment-form">
+        <input type="text" id="commenterName" placeholder="Your Name" required>
+        <textarea id="commentText" rows="4" placeholder="Share your thoughts about this story..." required></textarea>
+        <button onclick="addComment()">Post Comment</button>
+      </div>
+      <div class="comments-list" id="commentsList">
+        <!-- Comments will appear here -->
+      </div>
     </div>
   </section>
 
-  <!-- TAB 3 -->
+  <!-- TAB 3: CORRUPTION SCANDAL -->
   <section id="podcast" class="tab">
-    <div class="corruption-text">Ikulong na Yan mga Kurakot! Ikulong na Yan mga Kurakot!</div>
-    <img class="flag" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg" alt="PH Flag">
-    <img class="justice-scale" src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Scales_of_Justice.svg" alt="Justice">
-    <div class="spotlight"></div>
+    <div class="corruption-text">EXPOSE THE TRUTH • IKULONG NA YAN • JUSTICE FOR ALL</div>
+    <img class="flag" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_the_Philippines.svg" alt="Philippine Flag">
+    <div class="corruption-badge">BREAKING</div>
 
-    <h2>💀 Corruption: The Flood Control Scandal</h2>
+    <div class="scandal-header">
+      <h1>⚠️ Corruption Exposed</h1>
+      <p class="subtitle">The Flood Control Scandal: Where Did The Money Go?</p>
+    </div>
+
     <div class="video-box">
       <video controls>
         <source src="podcast.mp4" type="video/mp4">
+        Your browser does not support the video element.
       </video>
-      <p>Uncover the truth behind the misuse of public funds and the flood of lies beneath the surface.</p>
+      <p>
+        An investigative report uncovering the misuse of billions in public funds allocated for flood control projects. 
+        Follow the money trail and discover the truth behind the flooded streets and empty promises.
+      </p>
     </div>
   </section>
 
   <script>
     function openTab(tabName) {
-      const tabs = document.getElementsByClassName("tab");
-      for (let tab of tabs) tab.classList.remove("active");
-      document.getElementById(tabName).classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function openContentSection(sectionName) {
+      const sections = document.querySelectorAll('.content-section');
+      const buttons = document.querySelectorAll('.content-nav button');
+      
+      sections.forEach(section => section.classList.remove('active-section'));
+      buttons.forEach(button => button.classList.remove('active-section'));
+      
+      document.getElementById(sectionName).classList.add('active-section');
+      event.target.classList.add('active-section');
+    }
+
+    function addComment() {
+      const name = document.getElementById('commenterName').value.trim();
+      const text = document.getElementById('commentText').value.trim();
+      
+      if (!name || !text) {
+        alert('Please fill in both name and comment!');
+        return;
+      }
+      
+      const commentsList = document.getElementById('commentsList');
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      
+      commentDiv.innerHTML = `
+        <div class="comment-author">${name}</div>
+        <div class="comment-text">${text}</div>
+        <div class="comment-time">${timeString}</div>
+      `;
+      
+      commentsList.insertBefore(commentDiv, commentsList.firstChild);
+      
+      document.getElementById('commenterName').value = '';
+      document.getElementById('commentText').value = '';
     }
   </script>
 </body>
