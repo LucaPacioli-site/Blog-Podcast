@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
+    /* ... (Your original CSS is kept here, unchanged for brevity) ... */
+
     * {
       margin: 0;
       padding: 0;
@@ -487,18 +489,13 @@
       max-height: 400px;
       overflow-y: auto;
     }
-    
-    .comment-container {
-        margin-bottom: 15px;
-        position: relative;
-    }
 
     .comment {
       background: rgba(255, 255, 255, 0.2);
       padding: 15px;
       border-radius: 15px;
+      margin-bottom: 15px;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      margin-bottom: 5px; /* Reduced gap before replies */
     }
 
     .comment-author {
@@ -516,89 +513,6 @@
       font-size: 0.8em;
       opacity: 0.7;
       margin-top: 5px;
-      display: inline-block;
-      margin-right: 15px;
-    }
-
-    .reply-button {
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.8em;
-        font-weight: 600;
-        cursor: pointer;
-        transition: color 0.2s;
-        padding: 0;
-    }
-
-    .reply-button:hover {
-        color: #f093fb;
-    }
-
-    /* --- UPDATED REPLY STYLING --- */
-    .replies-section {
-        /* Indent replies and add a distinct vertical line */
-        margin-left: 20px; 
-        padding-left: 15px; 
-        border-left: 3px solid rgba(240, 147, 251, 0.7); /* Pink/Purple line */
-        margin-top: 10px;
-    }
-    
-    .reply {
-        /* Lighter background for distinction */
-        background: rgba(255, 255, 255, 0.1); 
-        padding: 12px;
-        border-radius: 10px;
-        margin-top: 10px; /* Space between replies */
-        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(240, 147, 251, 0.3); /* Subtle border matching the line */
-    }
-    
-    .reply-text {
-        font-size: 0.9em;
-        line-height: 1.5;
-    }
-
-    .reply-text strong {
-        /* Highlight the name being replied to with a bright color */
-        color: #f093fb; 
-        font-weight: 700;
-    }
-
-    .reply-author {
-        font-weight: 600;
-        color: #fff;
-        margin-bottom: 3px;
-        font-size: 0.95em;
-    }
-
-    /* Reply Form */
-    .reply-form-container {
-        padding: 15px;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        margin-top: 10px;
-        display: none;
-    }
-    
-    .reply-form-container.active {
-        display: block;
-    }
-
-    .reply-form-container input[type="text"],
-    .reply-form-container textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-family: "Poppins", sans-serif;
-    }
-    
-    .reply-form-container button {
-        padding: 8px 20px;
     }
 
     .audio-player {
@@ -851,11 +765,11 @@
     </div>
     
     <div class="content-nav">
-      <button onclick="openContentSection(event, 'info')" class="active-section">📋 Story Info</button>
-      <button onclick="openContentSection(event, 'blog')">💌 Read Story</button>
-      <button onclick="openContentSection(event, 'humans')">🧠 Humans Are Complex</button>
-      <button onclick="openContentSection(event, 'understanding')">💡 Understanding</button>
-      <button onclick="openContentSection(event, 'comments')">💬 Comments</button>
+      <button onclick="openContentSection('info')" class="active-section">📋 Story Info</button>
+      <button onclick="openContentSection('blog')">💌 Read Story</button>
+      <button onclick="openContentSection('humans')">🧠 Humans Are Complex</button>
+      <button onclick="openContentSection('understanding')">💡 Understanding</button>
+      <button onclick="openContentSection('comments')">💬 Comments</button>
     </div>
 
     <div id="info" class="content-section active-section">
@@ -965,16 +879,10 @@
       <div class="comment-form">
         <input type="text" id="commenterName" placeholder="Your Name" required>
         <textarea id="commentText" rows="4" placeholder="Share your thoughts about this story..." required></textarea>
-        <button onclick="addComment(null)">Post Comment</button>
+        <button onclick="addComment()">Post Comment</button>
       </div>
       <div class="comments-list" id="commentsList">
         </div>
-       <div id="replyFormTemplate" class="reply-form-container">
-          <input type="text" id="replyCommenterName" placeholder="Your Name" required>
-          <textarea id="replyCommentText" rows="2" placeholder="Reply to..." required></textarea>
-          <button id="replySubmitButton" class="reply-button" style="color: #667eea; border: 2px solid #667eea;">Post Reply</button>
-          <button onclick="hideReplyForm()" class="reply-button">Cancel</button>
-      </div>
     </div>
   </section>
 
@@ -1012,56 +920,46 @@
   </section>
 
   <script>
+    // Comment persistence key
     const COMMENTS_STORAGE_KEY = 'blogComments';
-    let nextCommentId = 1;
 
-    // --- REPLY FUNCTIONALITY ---
-
-    function showReplyForm(commentId, targetName) {
-        // Hide any active reply forms first
-        hideReplyForm();
-
-        const formTemplate = document.getElementById('replyFormTemplate');
-        const commentContainer = document.getElementById('comment-container-' + commentId);
-
-        if (!commentContainer) return;
-
-        // Clone the template to create a new, active form
-        const replyForm = formTemplate.cloneNode(true);
-        replyForm.removeAttribute('id'); // Remove template ID
-        replyForm.classList.add('active');
-
-        const nameInput = replyForm.querySelector('#replyCommenterName');
-        const textInput = replyForm.querySelector('#replyCommentText');
-        const submitButton = replyForm.querySelector('#replySubmitButton');
-
-        // Set placeholder and button action
-        textInput.placeholder = `Reply to ${targetName}...`;
-        textInput.value = ''; // Clear previous text
-        nameInput.value = ''; // Clear previous name
+    // Helper to render a single comment to the DOM
+    function renderComment(comment) {
+        const commentsList = document.getElementById('commentsList');
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
         
-        // Update the submit button's onclick to use the new addReply function
-        submitButton.setAttribute('onclick', `addReply('${commentId}', '${targetName}')`);
+        commentDiv.innerHTML = `
+            <div class="comment-author">${comment.name}</div>
+            <div class="comment-text">${comment.text}</div>
+            <div class="comment-time">${comment.time}</div>
+        `;
         
-        // Insert the new form right after the comment container
-        commentContainer.appendChild(replyForm);
-    }
-    
-    function hideReplyForm() {
-        // Find and remove all non-template reply forms
-        document.querySelectorAll('.reply-form-container:not(#replyFormTemplate)').forEach(form => {
-            form.remove();
-        });
+        // New comments go on top
+        commentsList.prepend(commentDiv);
     }
 
-    // --- COMMENT/REPLY ADDITION ---
-    
-    // Core function to add a comment OR a reply (if parentId is provided)
-    function addComment(parentId) {
-        const isReply = parentId !== null;
-        
-        const nameInput = isReply ? document.getElementById('replyCommenterName') : document.getElementById('commenterName');
-        const textInput = isReply ? document.getElementById('replyCommentText') : document.getElementById('commentText');
+    // Function to load and display comments from localStorage
+    function loadComments() {
+        const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
+        if (storedComments) {
+            try {
+                // Parse the JSON array
+                const comments = JSON.parse(storedComments);
+                // Iterate through the comments and display them
+                comments.forEach(renderComment);
+            } catch (e) {
+                console.error("Error parsing comments from localStorage:", e);
+                // Clear corrupt storage to prevent further issues
+                localStorage.removeItem(COMMENTS_STORAGE_KEY);
+            }
+        }
+    }
+
+    // Function to handle adding a new comment (UPDATED)
+    function addComment() {
+        const nameInput = document.getElementById('commenterName');
+        const textInput = document.getElementById('commentText');
         
         const name = nameInput.value.trim();
         const text = textInput.value.trim();
@@ -1072,194 +970,47 @@
         }
         
         const now = new Date();
-        const newId = nextCommentId++;
+        const timeString = now.toLocaleString();
         
-        const newPost = {
-            id: newId.toString(),
-            parentId: parentId, // null for primary comment, ID string for reply
+        // 1. Create the new comment object
+        const newComment = {
             name: name,
             text: text,
-            time: now.toLocaleString(),
-            replies: [] // Only primary comments will have this array initialized
+            time: timeString
         };
-        
-        let comments = getStoredComments();
 
-        if (isReply) {
-            // Find the parent comment and add the new post to its replies array
-            const parentComment = comments.find(c => c.id === parentId);
-            if (parentComment) {
-                // Initialize replies array if it doesn't exist (important for old comments)
-                if (!parentComment.replies) {
-                    parentComment.replies = [];
-                }
-                parentComment.replies.push(newPost);
-            }
-        } else {
-            // Add a new primary comment to the beginning of the list
-            newPost.replies = [];
-            comments.unshift(newPost);
-        }
+        // 2. Load existing comments or start a new array
+        const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
+        const comments = storedComments ? JSON.parse(storedComments) : [];
 
-        // Save and refresh
-        saveComments(comments);
-        refreshCommentList(); 
+        // 3. Add the new comment to the array (at the beginning for latest-first display)
+        comments.unshift(newComment);
+
+        // 4. Save the updated array back to localStorage
+        localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
+
+        // 5. Display the new comment on the page
+        renderComment(newComment);
         
-        // Clear inputs
+        // 6. Clear the form inputs
         nameInput.value = '';
         textInput.value = '';
-        
-        if (isReply) {
-            hideReplyForm();
-        }
-    }
-    
-    // Wrapper for addComment to be called from a reply button, requires targetName
-    function addReply(parentId, targetName) {
-        // We reuse the addComment function, but must ensure the text input 
-        // includes the target's name for clarity in the saved reply text.
-        
-        const textInput = document.getElementById('replyCommentText');
-        // Add a temporary prefix for the target name.
-        if (!textInput.value.startsWith(`@${targetName}`)) {
-            textInput.value = `@${targetName} ${textInput.value}`;
-        }
-
-        addComment(parentId);
     }
 
-
-    // --- STORAGE & INITIALIZATION ---
-
-    function getStoredComments() {
-        const stored = localStorage.getItem(COMMENTS_STORAGE_KEY);
-        try {
-            return stored ? JSON.parse(stored) : [];
-        } catch (e) {
-            console.error("Error parsing comments from localStorage:", e);
-            localStorage.removeItem(COMMENTS_STORAGE_KEY);
-            return [];
-        }
-    }
-
-    function saveComments(comments) {
-        localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
-    }
-    
-    function addTestComment() {
-      const comments = getStoredComments();
-      if (comments.length === 0) {
-        const testComment = {
-          id: nextCommentId++.toString(),
-          parentId: null,
-          name: "Gemini AI Assistant",
-          text: "The new background music is great! Love the mood. This comment has a reply button now!",
-          time: new Date().toLocaleString(),
-          replies: [
-              {
-                  id: nextCommentId++.toString(),
-                  parentId: "1", // Assuming the first primary comment is ID 1
-                  name: "John Saimon N.",
-                  text: "@Gemini AI Assistant I agree! The music perfectly suits the blog post's aesthetic. Great work on the reply feature!",
-                  time: new Date().toLocaleString(),
-              }
-          ]
-        };
-        // Add the test comment to the beginning
-        comments.unshift(testComment);
-        saveComments(comments);
-      }
-    }
-
-    // --- RENDERING ---
-    
-    function renderReply(reply) {
-        // Render a single reply inside the replies-section
-        const replyDiv = document.createElement('div');
-        replyDiv.className = 'reply';
-        
-        const replyText = reply.text.replace(/@([^\s]+)/, '<strong>@$1</strong>'); // Highlight the reply target
-        
-        replyDiv.innerHTML = `
-            <div class="reply-author">${reply.name}</div>
-            <div class="reply-text">${replyText}</div>
-            <div class="comment-time">${reply.time}</div>
-        `;
-        return replyDiv;
-    }
-
-    function renderComment(comment) {
-        const commentsList = document.getElementById('commentsList');
-
-        const commentContainer = document.createElement('div');
-        commentContainer.className = 'comment-container';
-        commentContainer.id = 'comment-container-' + comment.id;
-        
-        const commentDiv = document.createElement('div');
-        commentDiv.className = 'comment';
-        
-        commentDiv.innerHTML = `
-            <div class="comment-author">${comment.name}</div>
-            <div class="comment-text">${comment.text}</div>
-            <div class="comment-time">${comment.time}</div>
-            <button class="reply-button" onclick="showReplyForm('${comment.id}', '${comment.name}')">Reply</button>
-        `;
-        
-        commentContainer.appendChild(commentDiv);
-
-        // Render replies if they exist
-        if (comment.replies && comment.replies.length > 0) {
-            const repliesSection = document.createElement('div');
-            repliesSection.className = 'replies-section';
-            
-            // Render replies in the order they were added (latest reply at the bottom of the reply chain)
-            comment.replies.forEach(reply => {
-                repliesSection.appendChild(renderReply(reply));
-            });
-            commentContainer.appendChild(repliesSection);
-        }
-        
-        return commentContainer;
-    }
-
-    function refreshCommentList() {
-        const commentsList = document.getElementById('commentsList');
-        commentsList.innerHTML = ''; // Clear the current list
-
-        const comments = getStoredComments();
-        
-        // Determine the next ID for new comments/replies
-        let maxId = 0;
-        comments.forEach(comment => {
-            maxId = Math.max(maxId, parseInt(comment.id) || 0);
-            if (comment.replies && comment.replies.length > 0) {
-                comment.replies.forEach(reply => {
-                    maxId = Math.max(maxId, parseInt(reply.id) || 0);
-                });
-            }
-        });
-        nextCommentId = maxId + 1;
+    // Run once the page is fully loaded to display existing comments
+    document.addEventListener('DOMContentLoaded', loadComments);
 
 
-        // Render all comments (newest first)
-        comments.forEach(comment => {
-            commentsList.appendChild(renderComment(comment));
-        });
-    }
-
-
-    // --- PAGE INITIALIZATION ---
-    
-    // Background music control (unchanged)
+    // Background music control
     let bgMusic = null;
     let currentAudio = null;
 
     function initBackgroundMusic() {
       if (!bgMusic) {
-        // NOTE: Ensure you have 'lv_0_20251029145200.mp3' in the same folder!
-        bgMusic = new Audio('lv_0_20251029145200.mp3'); 
+        // --- CHANGED FILENAME HERE ---
+        bgMusic = new Audio('lv_0_20251029145200.mp3');
         bgMusic.loop = true;
-        bgMusic.volume = 0.3;
+        bgMusic.volume = 0.3; // Set to 30% volume so it's not too loud
       }
     }
 
@@ -1268,11 +1019,13 @@
       tabs.forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
 
+      // Handle background music for Tab 2
       initBackgroundMusic();
       if (tabName === 'content') {
         bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
       } else {
         bgMusic.pause();
+        // Stop any playing audio when leaving Tab 2
         if (currentAudio) {
           currentAudio.pause();
           currentAudio.currentTime = 0;
@@ -1281,8 +1034,7 @@
       }
     }
 
-    // CORRECTED FUNCTION SIGNATURE AND LOGIC
-    function openContentSection(event, sectionName) {
+    function openContentSection(sectionName) {
       const sections = document.querySelectorAll('.content-section');
       const buttons = document.querySelectorAll('.content-nav button');
       
@@ -1290,17 +1042,10 @@
       buttons.forEach(button => button.classList.remove('active-section'));
       
       document.getElementById(sectionName).classList.add('active-section');
-      
-      // Use event.currentTarget to reliably target the clicked button
-      if(event && event.currentTarget) {
-        event.currentTarget.classList.add('active-section');
-      }
-      
-      // Hide any active reply forms when switching sections
-      hideReplyForm();
+      event.target.classList.add('active-section');
     }
-    // END CORRECTED FUNCTION
 
+    // Create sparkles dynamically
     function createSparkles() {
       const container = document.getElementById('sparklesContainer');
       for (let i = 0; i < 20; i++) {
@@ -1312,13 +1057,8 @@
         container.appendChild(sparkle);
       }
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        addTestComment();
-        refreshCommentList();
-        createSparkles();
-    });
-
+    // Initialize sparkles when the content section is loaded
+    document.addEventListener('DOMContentLoaded', createSparkles);
   </script>
 </body>
 </html>
