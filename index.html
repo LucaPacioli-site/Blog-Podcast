@@ -1127,7 +1127,7 @@
     // Define the audio files that will trigger the volume change
     const READ_ALOUD_AUDIOS = ['audioInfo', 'audioStory', 'audioCritique', 'audioUnderstanding'];
     const DEFAULT_BG_VOLUME = 0.3; // 30%
-    const DUCKED_BG_VOLUME = 0.1;  // 10%
+    const DUCKED_BG_VOLUME = 0.08;  // 8%
 
     function initBackgroundMusic() {
       if (!bgMusic) {
@@ -1170,7 +1170,7 @@
 
     /**
      * Adjusts the background music volume based on whether a read-aloud is playing.
-     * @param {boolean} isReadAloudPlaying - true to duck volume (10%), false to restore (30%).
+     * @param {boolean} isReadAloudPlaying - true to duck volume (8%), false to restore (30%).
      */
     function setVolumeForPlayback(isReadAloudPlaying) {
         if (bgMusic) {
