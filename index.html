@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
 
   <style>
-    /* ... (Your original CSS is kept here, unchanged for brevity) ... */
+    /* ... (Your original CSS) ... */
 
     * {
       margin: 0;
@@ -555,6 +555,7 @@
     .like-count, .dislike-count {
       font-size: 0.85em;
       font-weight: 600;
+      margin-left: -5px; /* Adjust spacing near icon */
     }
     /* ------------------------------------------- */
 
@@ -963,45 +964,18 @@
   </section>
 
   <script>
-    // Tab switching logic (kept from original)
-    function openTab(tabName) {
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.getElementById(tabName).classList.add('active');
-    }
-
-    // Content section switching logic (kept from original)
-    function openContentSection(sectionId) {
-        document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.remove('active-section');
-        });
-        document.querySelectorAll('.content-nav button').forEach(button => {
-            button.classList.remove('active-section');
-        });
-
-        document.getElementById(sectionId).classList.add('active-section');
-        // Find the button that corresponds to the sectionId and add the active-section class
-        document.querySelector(`.content-nav button[onclick*="'${sectionId}'"]`).classList.add('active-section');
-    }
-
-    // --- NEW AND MODIFIED JAVASCRIPT FOR COMMENTS ---
-
     // Comment persistence key
-    const COMMENTS_STORAGE_KEY = 'blogCommentsV2'; // Changed key to reset old comments
+    // NOTE: Key uses V2 to reset old comments that didn't have like/dislike counts.
+    const COMMENTS_STORAGE_KEY = 'blogCommentsV2';
 
-    /**
-     * Helper to render a single comment to the DOM with interactivity.
-     * @param {object} comment - The comment object.
-     * @param {number} index - The index of the comment in the array.
-     */
+    // Helper to render a single comment to the DOM with interactivity.
     function renderComment(comment, index) {
         const commentsList = document.getElementById('commentsList');
         const commentDiv = document.createElement('div');
         commentDiv.className = 'comment';
         commentDiv.setAttribute('data-index', index); // Use index for reference
         
-        // Structure for a single comment
+        // Structure for a single comment with new buttons and counts
         commentDiv.innerHTML = `
             <div class="comment-author">${comment.name}</div>
             <div class="comment-text">${comment.text}</div>
@@ -1025,19 +999,13 @@
         commentsList.prepend(commentDiv);
     }
 
-    /**
-     * Handles like/dislike action and updates storage and DOM.
-     * NOTE: This is a simple implementation and doesn't prevent a user from liking/disliking multiple times.
-     * @param {number} index - The index of the comment in the stored array.
-     * @param {string} type - 'like' or 'dislike'.
-     */
+    // Handles like/dislike action and updates storage and DOM.
     function handleLikeDislike(index, type) {
         const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
         if (!storedComments) return;
 
         const comments = JSON.parse(storedComments);
-        // The DOM is prepending, so index 0 in the DOM is the last item in the *stored* array.
-        // We reverse the logic to access the correct stored comment.
+        // Calculate the index in the stored array (which is reversed compared to DOM prepending)
         const storedIndex = comments.length - 1 - index; 
 
         if (storedIndex >= 0 && storedIndex < comments.length) {
@@ -1056,13 +1024,8 @@
         }
     }
 
-    /**
-     * Placeholder function for replying to a comment.
-     * @param {number} index - The index of the comment in the DOM.
-     */
+    // Placeholder function for replying to a comment.
     function replyToComment(index) {
-        // In a real application, this would dynamically create a reply form
-        // or focus the main form with a reference to the comment being replied to.
         const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
         if (!storedComments) return;
 
@@ -1073,18 +1036,15 @@
         // Simple alert for demonstration
         alert(`Prepare to reply to: "${commentToReply.name}"\n\n(In a real app, a reply form would appear here)`);
 
-        // Optionally, focus the main comment box and prefill with a mention
-        const nameInput = document.getElementById('commenterName');
-        const textInput = document.getElementById('commentText');
-        
         // Move to comments section and prefill the textarea
         openContentSection('comments');
+        const textInput = document.getElementById('commentText');
         textInput.value = `@${commentToReply.name} `;
         textInput.focus();
     }
 
 
-    // Function to load and display comments from localStorage (MODIFIED)
+    // Function to load and display comments from localStorage (MODIFIED to use new structure)
     function loadComments() {
         const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
         const commentsList = document.getElementById('commentsList');
@@ -1094,14 +1054,11 @@
             try {
                 const comments = JSON.parse(storedComments);
                 
-                // We load comments in the *reverse* order they are stored (oldest first)
-                // so that the prepending `renderComment` places them correctly (latest first)
-                for(let i = 0; i < comments.length; i++) {
-                    // The index passed to renderComment is the DOM-visible index (0 is newest)
-                    // The comment at the beginning of the *stored* array will have the highest index.
-                    // The comment at the end of the *stored* array (the newest) will have index 0.
-                    const domIndex = comments.length - 1 - i;
-                    renderComment(comments[i], domIndex);
+                // Iterate through comments, loading them to the DOM.
+                for(let i = comments.length - 1; i >= 0; i--) {
+                    const comment = comments[i];
+                    const domIndex = comments.length - 1 - i; 
+                    renderComment(comment, domIndex);
                 }
 
             } catch (e) {
@@ -1111,7 +1068,7 @@
         }
     }
 
-    // Function to handle adding a new comment (MODIFIED)
+    // Function to handle adding a new comment (MODIFIED to include new properties)
     function addComment() {
         const nameInput = document.getElementById('commenterName');
         const textInput = document.getElementById('commentText');
@@ -1140,15 +1097,13 @@
         const storedComments = localStorage.getItem(COMMENTS_STORAGE_KEY);
         const comments = storedComments ? JSON.parse(storedComments) : [];
 
-        // 3. Add the new comment to the array (at the END to keep old comments first)
-        // Note: The `loadComments` and `renderComment` handle displaying it correctly (newest first)
+        // 3. Add the new comment to the END of the array (newest is last)
         comments.push(newComment);
 
         // 4. Save the updated array back to localStorage
         localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
 
         // 5. Clear and reload all comments to correctly assign new DOM indices/buttons
-        // This is a simple but robust way to update the list and indices.
         loadComments();
         
         // 6. Clear the form inputs
@@ -1159,11 +1114,10 @@
     // Run once the page is fully loaded to display existing comments
     document.addEventListener('DOMContentLoaded', loadComments);
 
-    // Initial tab load (kept from original)
-    document.addEventListener('DOMContentLoaded', () => {
-        openTab('authors'); 
-        openContentSection('info');
-    });
+
+    // -------------------------------------------------------------------
+    // --- YOUR ORIGINAL CODE (Background music, tab switching, sparkles)
+    // -------------------------------------------------------------------
 
     // Background music control
     let bgMusic = null;
@@ -1171,24 +1125,72 @@
 
     function initBackgroundMusic() {
       if (!bgMusic) {
-        // --- CHANGED FILENAME HERE ---
-        bgMusic = new Audio('lv_0_20251029145200.m 
-        // ... (The rest of the background music script is likely incomplete/irrelevant 
-        // to the core request, so I'll stop here to avoid creating new script errors
-        // based on partial code.)
-        // I will assume the user has the missing audio file and the rest of the script.
-        // For a full, working script, the user would need to ensure the audio controls
-        // and initBackgroundMusic function are fully defined. 
+        // NOTE: This audio file must exist in the same directory as the HTML file.
+        bgMusic = new Audio('lv_0_20251029145200.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3; // Set to 30% volume so it's not too loud
+      }
+    }
+
+    function openTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      // Handle background music for Tab 2
+      initBackgroundMusic();
+      if (tabName === 'content') {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        if (bgMusic) bgMusic.pause();
+        // Stop any playing audio when leaving Tab 2
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+      }
+    }
+
+    function openContentSection(sectionName) {
+      const sections = document.querySelectorAll('.content-section');
+      const buttons = document.querySelectorAll('.content-nav button');
+      
+      sections.forEach(section => section.classList.remove('active-section'));
+      buttons.forEach(button => button.classList.remove('active-section'));
+      
+      document.getElementById(sectionName).classList.add('active-section');
+      
+      // Find the button associated with the sectionName and activate it
+      const targetButton = document.querySelector(`.content-nav button[onclick*="'${sectionName}'"]`);
+      if (targetButton) {
+        targetButton.classList.add('active-section');
       }
     }
     
-    // Ensure the tab function is globally available
-    window.openTab = openTab;
-    window.openContentSection = openContentSection;
-    window.addComment = addComment;
-    window.handleLikeDislike = handleLikeDislike;
-    window.replyToComment = replyToComment;
+    // Initial tab load
+    document.addEventListener('DOMContentLoaded', () => {
+        openTab('authors'); 
+        openContentSection('info');
+    });
 
+
+    // Create sparkles dynamically
+    function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      if (!container) return; // Guard against not finding the container
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.top = `${Math.random() * 100}%`;
+        sparkle.style.left = `${Math.random() * 100}%`;
+        sparkle.style.animationDelay = `${Math.random() * 3}s`;
+        container.appendChild(sparkle);
+      }
+    }
+    // Initialize sparkles when the content section is loaded
+    document.addEventListener('DOMContentLoaded', createSparkles);
+    
   </script>
 </body>
 </html>
