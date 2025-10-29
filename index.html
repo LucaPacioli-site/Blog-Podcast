@@ -1115,6 +1115,7 @@
     document.addEventListener('DOMContentLoaded', loadComments);
 
 
+   
     // -------------------------------------------------------------------
     // --- YOUR ORIGINAL CODE (Background music, tab switching, sparkles)
     // -------------------------------------------------------------------
@@ -1122,15 +1123,117 @@
     // Background music control
     let bgMusic = null;
     let currentAudio = null;
+    
+    // Define the audio files that will trigger the volume change
+    const READ_ALOUD_AUDIOS = ['audioInfo', 'audioStory', 'audioCritique', 'audioUnderstanding'];
+    const DEFAULT_BG_VOLUME = 0.3; // 30%
+    const DUCKED_BG_VOLUME = 0.1;  // 10%
 
     function initBackgroundMusic() {
       if (!bgMusic) {
-        // NOTE: This audio file must exist in the same directory as the HTML file.
         bgMusic = new Audio('lv_0_20251029145200.mp3');
         bgMusic.loop = true;
-        bgMusic.volume = 0.3; // Set to 30% volume so it's not too loud
+        bgMusic.volume = DEFAULT_BG_VOLUME; 
+        monitorReadAlouds(); // Start monitoring as soon as music is initialized
       }
     }
+
+    /**
+     * Monitors the read-aloud audio elements to adjust the background music volume.
+     */
+    function monitorReadAlouds() {
+        READ_ALOUD_AUDIOS.forEach(id => {
+            const audio = document.getElementById(id);
+            if (audio) {
+                // When an audio starts playing, duck the background music
+                audio.addEventListener('play', () => {
+                    setVolumeForPlayback(true);
+                    currentAudio = audio; // Keep track of the currently playing read-aloud audio
+                });
+                
+                // When an audio pauses or ends, restore the background music volume
+                audio.addEventListener('pause', () => {
+                    setVolumeForPlayback(false);
+                    if (currentAudio === audio) {
+                        currentAudio = null;
+                    }
+                });
+                audio.addEventListener('ended', () => {
+                    setVolumeForPlayback(false);
+                    if (currentAudio === audio) {
+                        currentAudio = null;
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Adjusts the background music volume based on whether a read-aloud is playing.
+     * @param {boolean} isReadAloudPlaying - true to duck volume (10%), false to restore (30%).
+     */
+    function setVolumeForPlayback(isReadAloudPlaying) {
+        if (bgMusic) {
+            bgMusic.volume = isReadAloudPlaying ? DUCKED_BG_VOLUME : DEFAULT_BG_VOLUME;
+        }
+    }
+
+
+    function openTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      // Handle background music for Tab 2
+      initBackgroundMusic();
+      if (tabName === 'content') {
+        // Set volume to default (30%) when entering the tab
+        if (bgMusic) {
+            bgMusic.volume = DEFAULT_BG_VOLUME;
+        }
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        if (bgMusic) bgMusic.pause();
+        // Stop any playing audio when leaving Tab 2
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+        // Ensure ALL read-aloud audios are paused when leaving the content tab
+        READ_ALOUD_AUDIOS.forEach(id => {
+            const audio = document.getElementById(id);
+            if (audio) audio.pause();
+        });
+      }
+    }
+
+    function openContentSection(sectionName) {
+      const sections = document.querySelectorAll('.content-section');
+      const buttons = document.querySelectorAll('.content-nav button');
+      
+      sections.forEach(section => section.classList.remove('active-section'));
+      buttons.forEach(button => button.classList.remove('active-section'));
+      
+      document.getElementById(sectionName).classList.add('active-section');
+      
+      // Find the button associated with the sectionName and activate it
+      const targetButton = document.querySelector(`.content-nav button[onclick*="'${sectionName}'"]`);
+      if (targetButton) {
+        targetButton.classList.add('active-section');
+      }
+    }
+    
+    // Initial tab load
+    document.addEventListener('DOMContentLoaded', () => {
+        openTab('authors'); 
+        openContentSection('info');
+    });
+
+
+    // Create sparkles dynamically (omitted for brevity)
+    // ... (Your createSparkles function) ...
+    // document.addEventListener('DOMContentLoaded', createSparkles);
 
     function openTab(tabName) {
       const tabs = document.querySelectorAll('.tab');
