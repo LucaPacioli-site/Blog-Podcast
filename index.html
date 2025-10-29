@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Podcast</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-
   <style>
     * {
       margin: 0;
@@ -512,12 +511,18 @@
       line-height: 1.6;
     }
 
+    .comment-actions {
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
     .comment-time {
       font-size: 0.8em;
       opacity: 0.7;
-      margin-top: 5px;
-      display: inline-block;
       margin-right: 15px;
+      display: inline-block;
     }
 
     .reply-button {
@@ -533,6 +538,31 @@
 
     .reply-button:hover {
         color: #f093fb;
+    }
+
+    .vote-button {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1em;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s, transform 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .vote-button:hover {
+        transform: scale(1.1);
+    }
+    .vote-button.like:hover { color: #a5d6a7; } /* Light green */
+    .vote-button.dislike:hover { color: #ef9a9a; } /* Light red */
+
+    .vote-count {
+        font-size: 0.8em;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
     }
 
     /* --- UPDATED REPLY STYLING --- */
@@ -587,10 +617,14 @@
 
     .reply-form-container input[type="text"],
     .reply-form-container textarea {
+        width: 100%;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-family: "Poppins", sans-serif;
     }
     
     .reply-form-container button {
@@ -847,11 +881,11 @@
     </div>
     
     <div class="content-nav">
-      <button onclick="openContentSection('info')" class="active-section">📋 Story Info</button>
-      <button onclick="openContentSection('blog')">💌 Read Story</button>
-      <button onclick="openContentSection('humans')">🧠 Humans Are Complex</button>
-      <button onclick="openContentSection('understanding')">💡 Understanding</button>
-      <button onclick="openContentSection('comments')">💬 Comments</button>
+      <button onclick="openContentSection(event, 'info')" class="active-section">📋 Story Info</button>
+      <button onclick="openContentSection(event, 'blog')">💌 Read Story</button>
+      <button onclick="openContentSection(event, 'humans')">🧠 Humans Are Complex</button>
+      <button onclick="openContentSection(event, 'understanding')">💡 Understanding</button>
+      <button onclick="openContentSection(event, 'comments')">💬 Comments</button>
     </div>
 
     <div id="info" class="content-section active-section">
@@ -1009,12 +1043,73 @@
 
   <script>
     const COMMENTS_STORAGE_KEY = 'blogComments';
+    const VOTES_STORAGE_KEY = 'commentVotes';
     let nextCommentId = 1;
+
+    // --- VOTING MECHANISM ---
+
+    function getStoredVotes() {
+      const stored = localStorage.getItem(VOTES_STORAGE_KEY);
+      // Return a map of commentId -> { userId: 'like'/'dislike' }
+      return stored ? JSON.parse(stored) : {};
+    }
+
+    function saveVotes(votes) {
+      localStorage.setItem(VOTES_STORAGE_KEY, JSON.stringify(votes));
+    }
+    
+    // Simple way to get a unique user ID (session-based)
+    function getUserId() {
+        let userId = sessionStorage.getItem('userId');
+        if (!userId) {
+            userId = Math.random().toString(36).substring(2, 9);
+            sessionStorage.setItem('userId', userId);
+        }
+        return userId;
+    }
+
+    function toggleVote(commentId, type) {
+        const userId = getUserId();
+        const comments = getStoredComments();
+        const comment = comments.find(c => c.id === commentId);
+
+        if (!comment) return;
+
+        // Initialize counters if they don't exist
+        comment.likes = comment.likes || 0;
+        comment.dislikes = comment.dislikes || 0;
+        
+        // Get user's voting history
+        const allVotes = getStoredVotes();
+        const commentVotes = allVotes[commentId] || {};
+        const currentVote = commentVotes[userId];
+
+        if (currentVote === type) {
+            // Remove vote
+            comment[type + 's']--;
+            delete commentVotes[userId];
+        } else {
+            // Change or add vote
+            if (currentVote) {
+                // Remove previous vote
+                comment[currentVote + 's']--;
+            }
+            // Add new vote
+            comment[type + 's']++;
+            commentVotes[userId] = type;
+        }
+
+        allVotes[commentId] = commentVotes;
+
+        saveComments(comments);
+        saveVotes(allVotes);
+        refreshCommentList(); // Re-render to update counts
+    }
+
 
     // --- REPLY FUNCTIONALITY ---
 
     function showReplyForm(commentId, targetName) {
-        // Hide any active reply forms first
         hideReplyForm();
 
         const formTemplate = document.getElementById('replyFormTemplate');
@@ -1022,29 +1117,24 @@
 
         if (!commentContainer) return;
 
-        // Clone the template to create a new, active form
         const replyForm = formTemplate.cloneNode(true);
-        replyForm.removeAttribute('id'); // Remove template ID
+        replyForm.removeAttribute('id');
         replyForm.classList.add('active');
 
         const nameInput = replyForm.querySelector('#replyCommenterName');
         const textInput = replyForm.querySelector('#replyCommentText');
         const submitButton = replyForm.querySelector('#replySubmitButton');
 
-        // Set placeholder and button action
         textInput.placeholder = `Reply to ${targetName}...`;
-        textInput.value = ''; // Clear previous text
-        nameInput.value = ''; // Clear previous name
+        textInput.value = '';
+        nameInput.value = '';
         
-        // Update the submit button's onclick to use the new addReply function
         submitButton.setAttribute('onclick', `addReply('${commentId}', '${targetName}')`);
         
-        // Insert the new form right after the comment container
         commentContainer.appendChild(replyForm);
     }
     
     function hideReplyForm() {
-        // Find and remove all non-template reply forms
         document.querySelectorAll('.reply-form-container:not(#replyFormTemplate)').forEach(form => {
             form.remove();
         });
@@ -1052,7 +1142,6 @@
 
     // --- COMMENT/REPLY ADDITION ---
     
-    // Core function to add a comment OR a reply (if parentId is provided)
     function addComment(parentId) {
         const isReply = parentId !== null;
         
@@ -1072,36 +1161,32 @@
         
         const newPost = {
             id: newId.toString(),
-            parentId: parentId, // null for primary comment, ID string for reply
+            parentId: parentId,
             name: name,
             text: text,
             time: now.toLocaleString(),
-            replies: [] // Only primary comments will have this array initialized
+            likes: 0, // Initialize likes for new post
+            dislikes: 0 // Initialize dislikes for new post
         };
         
         let comments = getStoredComments();
 
         if (isReply) {
-            // Find the parent comment and add the new post to its replies array
             const parentComment = comments.find(c => c.id === parentId);
             if (parentComment) {
-                // Initialize replies array if it doesn't exist (important for old comments)
                 if (!parentComment.replies) {
                     parentComment.replies = [];
                 }
                 parentComment.replies.push(newPost);
             }
         } else {
-            // Add a new primary comment to the beginning of the list
             newPost.replies = [];
             comments.unshift(newPost);
         }
 
-        // Save and refresh
         saveComments(comments);
         refreshCommentList(); 
         
-        // Clear inputs
         nameInput.value = '';
         textInput.value = '';
         
@@ -1110,14 +1195,8 @@
         }
     }
     
-    // Wrapper for addComment to be called from a reply button, requires targetName
     function addReply(parentId, targetName) {
-        // We reuse the addComment function, but must ensure the text input 
-        // includes the target's name for clarity in the saved reply text.
-        
-        // Add a temporary prefix for the target name.
         const textInput = document.getElementById('replyCommentText');
-        // Check if the reply text already starts with the target name (to prevent duplicates)
         if (!textInput.value.startsWith(`@${targetName}`)) {
             textInput.value = `@${targetName} ${textInput.value}`;
         }
@@ -1150,19 +1229,22 @@
           id: nextCommentId++.toString(),
           parentId: null,
           name: "Gemini AI Assistant",
-          text: "The new background music is great! Love the mood. This comment has a reply button now!",
+          text: "The new background music is great! Love the mood. This comment now has like/dislike buttons!",
           time: new Date().toLocaleString(),
+          likes: 5, 
+          dislikes: 1,
           replies: [
               {
                   id: nextCommentId++.toString(),
-                  parentId: "1", // Assuming the first primary comment is ID 1
+                  parentId: "1",
                   name: "John Saimon N.",
                   text: "@Gemini AI Assistant I agree! The music perfectly suits the blog post's aesthetic. Great work on the reply feature!",
                   time: new Date().toLocaleString(),
+                  likes: 2, 
+                  dislikes: 0,
               }
           ]
         };
-        // Add the test comment to the beginning
         comments.unshift(testComment);
         saveComments(comments);
       }
@@ -1171,16 +1253,23 @@
     // --- RENDERING ---
     
     function renderReply(reply) {
-        // Render a single reply inside the replies-section
         const replyDiv = document.createElement('div');
         replyDiv.className = 'reply';
         
-        const replyText = reply.text.replace(/@([^\s]+)/, '<strong>@$1</strong>'); // Highlight the reply target
+        const replyText = reply.text.replace(/@([^\s]+)/, '<strong>@$1</strong>');
         
         replyDiv.innerHTML = `
             <div class="reply-author">${reply.name}</div>
             <div class="reply-text">${replyText}</div>
-            <div class="comment-time">${reply.time}</div>
+            <div class="comment-actions">
+                <span class="comment-time">${reply.time}</span>
+                <button class="vote-button like" onclick="toggleVote('${reply.id}', 'like')">
+                    👍 <span class="vote-count">${reply.likes || 0}</span>
+                </button>
+                <button class="vote-button dislike" onclick="toggleVote('${reply.id}', 'dislike')">
+                    👎 <span class="vote-count">${reply.dislikes || 0}</span>
+                </button>
+            </div>
         `;
         return replyDiv;
     }
@@ -1198,18 +1287,26 @@
         commentDiv.innerHTML = `
             <div class="comment-author">${comment.name}</div>
             <div class="comment-text">${comment.text}</div>
-            <div class="comment-time">${comment.time}</div>
-            <button class="reply-button" onclick="showReplyForm('${comment.id}', '${comment.name}')">Reply</button>
+            
+            <div class="comment-actions">
+                <span class="comment-time">${comment.time}</span>
+                <button class="reply-button" onclick="showReplyForm('${comment.id}', '${comment.name}')">Reply</button>
+                
+                <button class="vote-button like" onclick="toggleVote('${comment.id}', 'like')">
+                    👍 <span class="vote-count">${comment.likes || 0}</span>
+                </button>
+                <button class="vote-button dislike" onclick="toggleVote('${comment.id}', 'dislike')">
+                    👎 <span class="vote-count">${comment.dislikes || 0}</span>
+                </button>
+            </div>
         `;
         
         commentContainer.appendChild(commentDiv);
 
-        // Render replies if they exist
         if (comment.replies && comment.replies.length > 0) {
             const repliesSection = document.createElement('div');
             repliesSection.className = 'replies-section';
             
-            // Render replies in the order they were added (latest reply at the bottom of the reply chain)
             comment.replies.forEach(reply => {
                 repliesSection.appendChild(renderReply(reply));
             });
@@ -1221,11 +1318,11 @@
 
     function refreshCommentList() {
         const commentsList = document.getElementById('commentsList');
-        commentsList.innerHTML = ''; // Clear the current list
+        commentsList.innerHTML = '';
 
         const comments = getStoredComments();
         
-        // Determine the next ID for new comments/replies
+        // Find max ID for proper ID incrementing
         let maxId = 0;
         comments.forEach(comment => {
             maxId = Math.max(maxId, parseInt(comment.id) || 0);
@@ -1237,8 +1334,7 @@
         });
         nextCommentId = maxId + 1;
 
-
-        // Render all comments (newest first)
+        // Render comments (newest first)
         comments.forEach(comment => {
             commentsList.appendChild(renderComment(comment));
         });
@@ -1247,7 +1343,6 @@
 
     // --- PAGE INITIALIZATION ---
     
-    // Background music control (unchanged)
     let bgMusic = null;
     let currentAudio = null;
 
@@ -1278,7 +1373,7 @@
       }
     }
 
-    function openContentSection(sectionName) {
+    function openContentSection(event, sectionName) {
       const sections = document.querySelectorAll('.content-section');
       const buttons = document.querySelectorAll('.content-nav button');
       
@@ -1286,14 +1381,11 @@
       buttons.forEach(button => button.classList.remove('active-section'));
       
       document.getElementById(sectionName).classList.add('active-section');
-      // Use event.currentTarget if this function is called directly from the button click
-      // Otherwise, the general event object may not be available.
-      // For simplicity, we assume event.target is sufficient here.
-      if(event && event.target) {
-        event.target.classList.add('active-section');
+      
+      if(event && event.currentTarget) {
+        event.currentTarget.classList.add('active-section');
       }
       
-      // Hide any active reply forms when switching sections
       hideReplyForm();
     }
 
@@ -1313,10 +1405,6 @@
         addTestComment();
         refreshCommentList();
         createSparkles();
-        // Set the default tab to 'authors' (already done in HTML but good practice)
-        // openTab('authors');
-        // Set the default content section to 'info' (already done in HTML but good practice)
-        // openContentSection('info');
     });
 
   </script>
