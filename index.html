@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1=0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Podcast</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -799,9 +799,23 @@
         </div>
       </div>
 
+      <div style="margin-top: 30px; text-align: center;">
+        <h3 style="margin-bottom: 15px; color: #fff;">🎬 Watch the Original Film</h3>
+        <iframe 
+          width="100%" 
+          height="400" 
+          src="https://www.youtube.com/embed/3AQ7yC5jQ28" 
+          title="Hello - Short Film" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          style="border-radius: 15px; max-width: 700px; box-shadow: 0 5px 20px rgba(0,0,0,0.3);">
+        </iframe>
+      </div>
+
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Story Info</div>
-        <audio controls>
+        <audio controls id="audioInfo">
           <source src="story-info.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
@@ -819,7 +833,7 @@
 
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to the Story</div>
-        <audio controls>
+        <audio controls id="audioStory">
           <source src="story.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
@@ -829,13 +843,22 @@
     <!-- Humans Are Complex Section -->
     <div id="humans" class="content-section">
       <h2>Humans Are Complex Creatures</h2>
+      <p class="no-indent" style="font-weight: 600; font-style: italic;">Have you ever heard of the word "sonder"?</p>
+      <p class="no-indent" style="margin-bottom: 25px;">Sonder is the profound understanding that every individual you see has a complete inner world that is just as intricate and detailed as yours.</p>
+      
+      <p>The story of Charles is not a man-made story or any fantasy that we're used to encountering. His story is just a reflection of humans like him. But in reality, we're not all the same with Charles. Some of us like socializing and love people. While some of us just don't bother to care at all. You see, each of us live our own lives. That is why it is important to have an understanding on how complex human beings are. This manner can help us to have a deeper understanding of the personality of each individual we encounter. Without this, conflict may arise and misunderstanding happens.</p>
+      
+      <p class="no-indent" style="font-weight: 600; margin-top: 25px;">To give you a clear explanation of having an understanding of human personalities, here's a scenario based on someone's experience:</p>
+      
+      <p>"A girl named Ysa was invited by her friends to hang out this Saturday. Due to not being an outgoing person, she made it clear to her friends that she can't come and promised to invite them to an indoor activity next time. Her friends accepted her excuse and continued their hang out. Knowing that without her, they still continue their hang out and that didn't bother Ysa because she understands that her friends are very outgoing and just want to spend time together. They accepted her excuse because they understand that she doesn't like to go outdoors. They both accepted each of their excuses, and that understanding helped them to have clarity and proceed their own lives without any issues."</p>
+      
       <p class="no-indent" style="font-weight: 600; margin-top: 25px;">Now, let's see what it is like without having an understanding of human personalities, here's a scenario based on someone's experience:</p>
       
       <p>"A student named Larry was really struggling and stressed at school. When he got home, he was always on his books and barely spent time with his family. His mother got frustrated with him, yelled at him and assumed that Larry likes to take all the responsibilities at school, and that's why he's stressed like that. He was hurt because he was misunderstood. He really has a lot of work even though he finishes them by the time. He's the type of person who doesn't like to communicate when trying to focus on something. Besides, his mother is someone who is really caring and needs a clear explanation from her son, not just ignorance from him. When we refuse to make ourselves clear, conflict may arise between us and other people."</p>
 
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Humans Are Complex</div>
-        <audio controls>
+        <audio controls id="audioCritique">
           <source src="humans-complex.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
@@ -851,7 +874,7 @@
 
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Understanding Personality</div>
-        <audio controls>
+        <audio controls id="audioUnderstanding">
           <source src="understanding.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
@@ -907,10 +930,36 @@
   </section>
 
   <script>
+    // Background music control
+    let bgMusic = null;
+    let currentAudio = null;
+
+    function initBackgroundMusic() {
+      if (!bgMusic) {
+        bgMusic = new Audio('Sino by Unique Salonga.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3; // Set to 30% volume so it's not too loud
+      }
+    }
+
     function openTab(tabName) {
       const tabs = document.querySelectorAll('.tab');
       tabs.forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
+
+      // Handle background music for Tab 2
+      initBackgroundMusic();
+      if (tabName === 'content') {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        bgMusic.pause();
+        // Stop any playing audio when leaving Tab 2
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+      }
     }
 
     function openContentSection(sectionName) {
@@ -965,17 +1014,65 @@
       }
     }
 
-    // Initialize sparkles when page loads
-    window.addEventListener('load', createSparkles);
+    // Handle audio players - lower background music when read-aloud plays
+    function setupAudioPlayers() {
+      const audioPlayers = ['audioInfo', 'audioStory', 'audioCritique', 'audioUnderstanding'];
+      
+      audioPlayers.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+          audio.addEventListener('play', function() {
+            // Lower background music volume when read-aloud starts
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.1;
+            }
+            // Pause other audio players
+            audioPlayers.forEach(otherId => {
+              if (otherId !== id) {
+                const otherAudio = document.getElementById(otherId);
+                if (otherAudio && !otherAudio.paused) {
+                  otherAudio.pause();
+                }
+              }
+            });
+            currentAudio = audio;
+          });
+          
+          audio.addEventListener('pause', function() {
+            // Restore background music volume when read-aloud ends
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.3;
+            }
+            if (currentAudio === audio) {
+              currentAudio = null;
+            }
+          });
+          
+          audio.addEventListener('ended', function() {
+            // Restore background music volume when read-aloud ends
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.3;
+            }
+            if (currentAudio === audio) {
+              currentAudio = null;
+            }
+          });
+        }
+      });
+    }
+
+    // Initialize sparkles and audio when page loads
+    window.addEventListener('load', function() {
+      createSparkles();
+      setupAudioPlayers();
+      initBackgroundMusic();
+      
+      // Try to autoplay background music on Tab 2 (may be blocked by browser)
+      const contentTab = document.getElementById('content');
+      if (contentTab.classList.contains('active')) {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      }
+    });
   </script>
 </body>
-</html>; font-style: italic;">Have you ever heard of the word "sonder"?</p>
-      <p class="no-indent" style="margin-bottom: 25px;">Sonder is the profound understanding that every individual you see has a complete inner world that is just as intricate and detailed as yours.</p>
-      
-      <p>The story of Charles is not a man-made story or any fantasy that we're used to encountering. His story is just a reflection of humans like him. But in reality, we're not all the same with Charles. Some of us like socializing and love people. While some of us just don't bother to care at all. You see, each of us live our own lives. That is why it is important to have an understanding on how complex human beings are. This manner can help us to have a deeper understanding of the personality of each individual we encounter. Without this, conflict may arise and misunderstanding happens.</p>
-      
-      <p class="no-indent" style="font-weight: 600; margin-top: 25px;">To give you a clear explanation of having an understanding of human personalities, here's a scenario based on someone's experience:</p>
-      
-      <p>"A girl named Ysa was invited by her friends to hang out this Saturday. Due to not being an outgoing person, she made it clear to her friends that she can't come and promised to invite them to an indoor activity next time. Her friends accepted her excuse and continued their hang out. Knowing that without her, they still continue their hang out and that didn't bother Ysa because she understands that her friends are very outgoing and just want to spend time together. They accepted her excuse because they understand that she doesn't like to go outdoors. They both accepted each of their excuses, and that understanding helped them to have clarity and proceed their own lives without any issues."</p>
-      
-      <p class="no-indent" style="font-weight: 600
+</html>
