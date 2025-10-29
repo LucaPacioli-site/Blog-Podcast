@@ -378,7 +378,6 @@
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(20px);
       padding: 40px;
-      padding-top: 80px;
       border-radius: 25px;
       max-width: 900px;
       width: 90%;
@@ -387,7 +386,6 @@
       animation: slideUp 0.5s ease-in-out;
       margin-bottom: 20px;
       border: 2px solid rgba(255, 255, 255, 0.3);
-      position: relative;
     }
 
     .content-section.active-section {
@@ -516,22 +514,14 @@
     }
 
     .audio-player {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      text-align: right;
-      z-index: 10;
+      text-align: center;
+      margin: 20px 0;
     }
 
     .audio-label {
       font-weight: 600;
       margin-bottom: 10px;
-      font-size: 0.95em;
-    }
-    
-    .audio-player audio {
-      margin-top: 10px;
-      width: 250px;
+      font-size: 1.1em;
     }
 
     /* ============ TAB 3: PODCAST - BEIGE AESTHETIC ============ */
@@ -707,20 +697,6 @@
       .episode-header {
         font-size: 1.5em;
       }
-      
-      .audio-player {
-        position: static;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      
-      .audio-player audio {
-        width: 100%;
-      }
-      
-      .content-section {
-        padding-top: 40px;
-      }
     }
   </style>
 </head>
@@ -758,7 +734,7 @@
         </div>
       </div>
       
-      <!-- Bottom Row: Website Developer + Graphics Designer -->
+      <!-- Bottom Row: Web Developer + Graphics Designer -->
       <div class="author-row bottom">
         <div class="author-card">
           <img src="20250727_215046 - Edited_20251029_154010_0000.png" alt="John Saimon Novenario">
@@ -801,14 +777,6 @@
 
     <!-- Story Info Section -->
     <div id="info" class="content-section active-section">
-      <div class="audio-player">
-        <div class="audio-label">🔊 Listen to Story Info</div>
-        <audio controls id="audioInfo">
-          <source src="Messenger_creation_2213379616152544.mp3" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-      
       <h2>Story Information</h2>
       <p class="no-indent" style="text-align: center; font-style: italic; margin-bottom: 25px;">
         A simple greeting is all it takes to change lives.
@@ -844,10 +812,25 @@
           style="border-radius: 15px; max-width: 700px; box-shadow: 0 5px 20px rgba(0,0,0,0.3);">
         </iframe>
       </div>
+
+      <div class="audio-player">
+        <div class="audio-label">🔊 Listen to Story Info</div>
+        <audio controls id="audioInfo">
+          <source src="Messenger_creation_2213379616152544.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
     </div>
 
     <!-- Blog Post Section -->
     <div id="blog" class="content-section">
+      <h2>A Story That Started With "Hello"</h2>
+      <p>It all started with Charles. Charles is a college student. He described himself as someone who likes computers, anime, and other weird stuff. He plays some sports, but he still sees himself as a nobody. Charles is someone who likes being alone, yet he hates the thing called loneliness. Being an introvert, he admits that making a conversation with someone makes his heart pound, and being alone enables him to do some things without being judged. In short, socializing was really hard for him.</p>
+      
+      <p>One morning while doing his work in the hallway, someone suddenly appeared right in front of him and said "Hello!". He wasn't so shocked that time, but one thing he knew was that that word changed something to him. That someone was a girl named Angelica. She came to Charles and asked him for lunch. Charles, who's very shy to people, without hesitation, agreed to have lunch with her. He felt anxious, but hides his fear with a smile anyways. He never expected someone to approach him just like that. She kept talking to him like nothing, and he replied like he never feared talking.</p>
+      
+      <p>Day by day, they got to know each other more. Charles became friends with Angelica's friends. Some have vices, some are gifted and some are broken, but he learned to accept them. To him, minutes became hours, laughter became memories and everyday became fun. He still loves being alone, but what changed is that loneliness doesn't hit him anymore. That's when he realized that it's not hard to make new friends, to be accepted and to accept others. What's hard is having fear that stops you from doing things.</p>
+
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to the Story</div>
         <audio controls id="audioStory">
@@ -855,11 +838,241 @@
           Your browser does not support the audio element.
         </audio>
       </div>
-      
-      <h2>A Story That Started With "Hello"</h2>
-      <p>It all started with Charles. Charles is a college student. He described himself as someone who likes computers, anime, and other weird stuff. He plays some sports, but he still sees himself as a nobody. Charles is someone who likes being alone, yet he hates the thing called loneliness. Being an introvert, he admits that making a conversation with someone makes his heart pound, and being alone enables him to do some things without being judged. In short, socializing was really hard for him.</p>
-      
-      <p>One morning while doing his work in the hallway, someone suddenly appeared right in front of him and said "Hello!". He wasn't so shocked that time, but one thing he knew was that that word changed something to him. That someone was a girl named Angelica. She came to Charles and asked him for lunch. Charles, who's very shy to people, without hesitation, agreed to have lunch with her. He felt anxious, but hides his fear with a smile anyways. He never expected someone to approach him just like that. She kept talking to him like nothing, and he replied like he never feared talking.</p>
-      
-      <p>Day by day, they got to know each other more. Charles became friends with Angelica's friends. Some have vices, some are gifted and some are broken, but he learned to accept them. To him, minutes became hours, laughter became memories and everyday became fun. He still loves being alone, but what changed is that loneliness doesn't hit him anymore. That's when he realized that it's not hard to make new friends, to be accepted and to accept others. What's hard is having fear that stops you from doing things.</p>
     </div>
+
+    <!-- Humans Are Complex Section -->
+    <div id="humans" class="content-section">
+      <h2>Humans Are Complex Creatures</h2>
+      <p class="no-indent" style="font-weight: 600; font-style: italic;">Have you ever heard of the word "sonder"?</p>
+      <p class="no-indent" style="margin-bottom: 25px;">Sonder is the profound understanding that every individual you see has a complete inner world that is just as intricate and detailed as yours.</p>
+      
+      <p>The story of Charles is not a man-made story or any fantasy that we're used to encountering. His story is just a reflection of humans like him. But in reality, we're not all the same with Charles. Some of us like socializing and love people. While some of us just don't bother to care at all. You see, each of us live our own lives. That is why it is important to have an understanding on how complex human beings are. This manner can help us to have a deeper understanding of the personality of each individual we encounter. Without this, conflict may arise and misunderstanding happens.</p>
+      
+      <p class="no-indent" style="font-weight: 600; margin-top: 25px;">To give you a clear explanation of having an understanding of human personalities, here's a scenario based on someone's experience:</p>
+      
+      <p>"A girl named Ysa was invited by her friends to hang out this Saturday. Due to not being an outgoing person, she made it clear to her friends that she can't come and promised to invite them to an indoor activity next time. Her friends accepted her excuse and continued their hang out. Knowing that without her, they still continue their hang out and that didn't bother Ysa because she understands that her friends are very outgoing and just want to spend time together. They accepted her excuse because they understand that she doesn't like to go outdoors. They both accepted each of their excuses, and that understanding helped them to have clarity and proceed their own lives without any issues."</p>
+      
+      <p class="no-indent" style="font-weight: 600; margin-top: 25px;">Now, let's see what it is like without having an understanding of human personalities, here's a scenario based on someone's experience:</p>
+      
+      <p>"A student named Larry was really struggling and stressed at school. When he got home, he was always on his books and barely spent time with his family. His mother got frustrated with him, yelled at him and assumed that Larry likes to take all the responsibilities at school, and that's why he's stressed like that. He was hurt because he was misunderstood. He really has a lot of work even though he finishes them by the time. He's the type of person who doesn't like to communicate when trying to focus on something. Besides, his mother is someone who is really caring and needs a clear explanation from her son, not just ignorance from him. When we refuse to make ourselves clear, conflict may arise between us and other people."</p>
+
+      <div class="audio-player">
+        <div class="audio-label">🔊 Listen to Humans Are Complex</div>
+        <audio controls id="audioCritique">
+          <source src="Messenger_creation_7613FDF7-7079-40D5-B046-7F36D43FC147.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+
+    <!-- Understanding Section -->
+    <div id="understanding" class="content-section">
+      <h2>What Does Understanding of Human Personality Mean in the Short Film "Hello"?</h2>
+      <p>Due to the diverse personalities of people, like Charles, we develop a fear of interacting with others because we are afraid of being judged for our actions. Despite this, there are cases where it does not develop, but rather it is actually part of an individual's personality. There are also people like Angelica, who have an open understanding of different types of people and therefore able to interact with them.</p>
+      
+      <p>We don't need to change ourselves just to fit in the society, because we are the society. Having a broad perspective on the personality of others can help us understand some of the reasons for their actions. This is inherent in our human nature, which is why we should not force on them what is right in our perception, but rather it is more important that we accept our differences and embrace the reality of who we are as humans.</p>
+
+      <div class="audio-player">
+        <div class="audio-label">🔊 Listen to Understanding Personality</div>
+        <audio controls id="audioUnderstanding">
+          <source src="29102025_153135.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div id="comments" class="content-section">
+      <h2>💬 Reader Comments & Feedback</h2>
+      <div class="comment-form">
+        <input type="text" id="commenterName" placeholder="Your Name" required>
+        <textarea id="commentText" rows="4" placeholder="Share your thoughts about this story..." required></textarea>
+        <button onclick="addComment()">Post Comment</button>
+      </div>
+      <div class="comments-list" id="commentsList">
+        <!-- Comments will appear here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 3: PODCAST ============ -->
+  <section id="podcast" class="tab">
+    <div class="podcast-decoration"></div>
+    <div class="podcast-decoration"></div>
+    <div class="vintage-line"></div>
+    <div class="vintage-line"></div>
+
+    <div class="podcast-header">
+      <h1><span class="highlight">L</span>et <span class="highlight">U</span>s <span class="highlight">C</span>all <span class="highlight">A</span>wt</h1>
+      <p class="subtitle">Uncovering Truth, One Episode at a Time</p>
+    </div>
+
+    <div class="episode-container">
+      <div class="episode-header">🎙️ Episode 1</div>
+      <iframe src="https://drive.google.com/file/d/1MIoY1lks-AnCNC08MqNj_1iKHWem_tJq/preview" 
+              width="100%" 
+              height="480" 
+              allow="autoplay">
+      </iframe>
+      <div class="episode-description">
+        <h3 style="margin-bottom: 15px; color: #8b5a2b;">The Flood Control Scandal: Where Did The Billions Go?</h3>
+        <p style="margin-bottom: 12px;">In this explosive first episode of "Let Us Call Awt," we dive deep into one of the Philippines' most controversial corruption scandals involving flood control projects. Despite billions of pesos allocated for infrastructure meant to protect communities from devastating floods, many areas remain submerged during heavy rains.</p>
+        <p style="margin-bottom: 12px;">Our investigation reveals:</p>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+          <li>Ghost projects that exist only on paper</li>
+          <li>Substandard materials used in construction</li>
+          <li>Kickback schemes between contractors and officials</li>
+          <li>Communities still suffering from floods despite completed "projects"</li>
+        </ul>
+        <p style="margin-top: 12px; font-style: italic;">Join us as we follow the money trail and expose the truth behind the flooded streets and empty promises. Because when public funds disappear, it's time to call out the corruption.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Background music control
+    let bgMusic = null;
+    let currentAudio = null;
+
+    function initBackgroundMusic() {
+      if (!bgMusic) {
+        bgMusic = new Audio('Mr. Kupido ( lyrics ) - Rachel Alejandro.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3; // Set to 30% volume so it's not too loud
+      }
+    }
+
+    function openTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      // Handle background music for Tab 2
+      initBackgroundMusic();
+      if (tabName === 'content') {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        bgMusic.pause();
+        // Stop any playing audio when leaving Tab 2
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+      }
+    }
+
+    function openContentSection(sectionName) {
+      const sections = document.querySelectorAll('.content-section');
+      const buttons = document.querySelectorAll('.content-nav button');
+      
+      sections.forEach(section => section.classList.remove('active-section'));
+      buttons.forEach(button => button.classList.remove('active-section'));
+      
+      document.getElementById(sectionName).classList.add('active-section');
+      event.target.classList.add('active-section');
+    }
+
+    function addComment() {
+      const name = document.getElementById('commenterName').value.trim();
+      const text = document.getElementById('commentText').value.trim();
+      
+      if (!name || !text) {
+        alert('Please fill in both name and comment!');
+        return;
+      }
+      
+      const commentsList = document.getElementById('commentsList');
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      
+      commentDiv.innerHTML = `
+        <div class="comment-author">${name}</div>
+        <div class="comment-text">${text}</div>
+        <div class="comment-time">${timeString}</div>
+      `;
+      
+      commentsList.insertBefore(commentDiv, commentsList.firstChild);
+      
+      document.getElementById('commenterName').value = '';
+      document.getElementById('commentText').value = '';
+    }
+
+    // Create sparkles dynamically
+    function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 3 + 's';
+        container.appendChild(sparkle);
+      }
+    }
+
+    // Handle audio players - lower background music when read-aloud plays
+    function setupAudioPlayers() {
+      const audioPlayers = ['audioInfo', 'audioStory', 'audioCritique', 'audioUnderstanding'];
+      
+      audioPlayers.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+          audio.addEventListener('play', function() {
+            // Lower background music volume when read-aloud starts
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.1;
+            }
+            // Pause other audio players
+            audioPlayers.forEach(otherId => {
+              if (otherId !== id) {
+                const otherAudio = document.getElementById(otherId);
+                if (otherAudio && !otherAudio.paused) {
+                  otherAudio.pause();
+                }
+              }
+            });
+            currentAudio = audio;
+          });
+          
+          audio.addEventListener('pause', function() {
+            // Restore background music volume when read-aloud ends
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.3;
+            }
+            if (currentAudio === audio) {
+              currentAudio = null;
+            }
+          });
+          
+          audio.addEventListener('ended', function() {
+            // Restore background music volume when read-aloud ends
+            if (bgMusic && !bgMusic.paused) {
+              bgMusic.volume = 0.3;
+            }
+            if (currentAudio === audio) {
+              currentAudio = null;
+            }
+          });
+        }
+      });
+    }
+
+    // Initialize sparkles and audio when page loads
+    window.addEventListener('load', function() {
+      createSparkles();
+      setupAudioPlayers();
+      initBackgroundMusic();
+      
+      // Try to autoplay background music on Tab 2 (may be blocked by browser)
+      const contentTab = document.getElementById('content');
+      if (contentTab.classList.contains('active')) {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      }
+    });
+  </script>
+</body>
+</html>
