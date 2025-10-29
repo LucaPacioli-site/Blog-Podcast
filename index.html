@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog and Podcast</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -51,12 +52,6 @@
       transform: scale(1.05);
     }
 
-    /* CSS for active navigation button (optional, but good for feedback) */
-    nav button.active {
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    }
-
     .tab {
       display: none;
       height: 100vh;
@@ -66,8 +61,6 @@
       left: 0;
       overflow-y: auto;
       animation: fadeIn 0.8s ease-in-out;
-      /* Scrollbar fix for content inside fixed/full-screen tabs */
-      padding-top: 70px; /* Account for the fixed navigation bar */
     }
 
     .tab.active {
@@ -519,18 +512,12 @@
       line-height: 1.6;
     }
 
-    .comment-actions {
-        margin-top: 8px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
     .comment-time {
       font-size: 0.8em;
       opacity: 0.7;
-      margin-right: 15px;
+      margin-top: 5px;
       display: inline-block;
+      margin-right: 15px;
     }
 
     .reply-button {
@@ -546,31 +533,6 @@
 
     .reply-button:hover {
         color: #f093fb;
-    }
-
-    .vote-button {
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.1em;
-        cursor: pointer;
-        padding: 0;
-        transition: color 0.2s, transform 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .vote-button:hover {
-        transform: scale(1.1);
-    }
-    .vote-button.like:hover { color: #a5d6a7; } /* Light green */
-    .vote-button.dislike:hover { color: #ef9a9a; } /* Light red */
-
-    .vote-count {
-        font-size: 0.8em;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.9);
     }
 
     /* --- UPDATED REPLY STYLING --- */
@@ -829,9 +791,9 @@
 <body>
 
   <nav>
-    <button onclick="openTab('authors')" id="tabButtonAuthors">📰 Authors</button>
-    <button onclick="openTab('content')" id="tabButtonContent">📝 Blog Post</button>
-    <button onclick="openTab('podcast')" id="tabButtonPodcast">🎙️ Podcast</button>
+    <button onclick="openTab('authors')">📰 Authors</button>
+    <button onclick="openTab('content')">📝 Blog Post</button>
+    <button onclick="openTab('podcast')">🎙️ Podcast</button>
   </nav>
 
   <section id="authors" class="tab active">
@@ -936,7 +898,7 @@
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Story Info</div>
         <audio controls id="audioInfo">
-          <source src="Messenger_creation_2213379616152544.mp3" type="audio/mpeg">
+          <source src="story-info.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
       </div>
@@ -953,7 +915,7 @@
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to the Story</div>
         <audio controls id="audioStory">
-          <source src="received_814492914737298.mp3" type="audio/mpeg">
+          <source src="story.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
       </div>
@@ -977,7 +939,7 @@
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Humans Are Complex</div>
         <audio controls id="audioCritique">
-          <source src="Messenger_creation_7613FDF7-7079-40D5-B046-7F36D43FC147.mp3" type="audio/mpeg">
+          <source src="humans-complex.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
       </div>
@@ -992,7 +954,7 @@
       <div class="audio-player">
         <div class="audio-label">🔊 Listen to Understanding Personality</div>
         <audio controls id="audioUnderstanding">
-          <source src="29102025_153135.mp3" type="audio/mpeg">
+          <source src="understanding.mp3" type="audio/mpeg">
           Your browser does not support the audio element.
         </audio>
       </div>
@@ -1003,7 +965,7 @@
       <div class="comment-form">
         <input type="text" id="commenterName" placeholder="Your Name" required>
         <textarea id="commentText" rows="4" placeholder="Share your thoughts about this story..." required></textarea>
-        <button onclick="addComment(null)">Post Comment</button> 
+        <button onclick="addComment(null)">Post Comment</button>
       </div>
       <div class="comments-list" id="commentsList">
         </div>
@@ -1044,129 +1006,319 @@
           <li>Kickback schemes between contractors and officials</li>
           <li>Communities still suffering from floods despite completed "projects"</li>
         </ul>
+        <p style="margin-top: 12px; font-style: italic;">Join us as we follow the money trail and expose the truth behind the flooded streets and empty promises. Because when public funds disappear, it's time to call out the corruption.</p>
       </div>
     </div>
   </section>
 
-<script>
-    // ===============================================
-    // JAVASCRIPT FOR TAB FUNCTIONALITY
-    // ===============================================
+  <script>
+    const COMMENTS_STORAGE_KEY = 'blogComments';
+    let nextCommentId = 1;
 
-    // --- Main Tab Switcher Function ---
-    function openTab(tabId) {
-        // 1. Hide all main sections
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.classList.remove('active');
-        });
+    // --- REPLY FUNCTIONALITY ---
 
-        // 2. Deactivate all navigation buttons
-        const buttons = document.querySelectorAll('nav button');
-        buttons.forEach(button => {
-            button.classList.remove('active');
-        });
+    function showReplyForm(commentId, targetName) {
+        // Hide any active reply forms first
+        hideReplyForm();
 
-        // 3. Show the target section and activate the corresponding button
-        const targetTab = document.getElementById(tabId);
-        if (targetTab) {
-            targetTab.classList.add('active');
-            
-            // Activate the button
-            const clickedButton = document.querySelector(`[onclick="openTab('${tabId}')"]`);
-            if (clickedButton) {
-                clickedButton.classList.add('active');
-            }
-            
-            // Scroll the content to the top when switching tabs
-            targetTab.scrollTop = 0;
-        }
-    }
+        const formTemplate = document.getElementById('replyFormTemplate');
+        const commentContainer = document.getElementById('comment-container-' + commentId);
 
-    // --- Inner Content Section Switcher Function (For Blog Post) ---
-    function openContentSection(evt, sectionId) {
-        // 1. Hide all inner sections by removing 'active-section' class
-        const contentSections = document.querySelectorAll('#content .content-section');
-        contentSections.forEach(section => {
-            section.classList.remove('active-section');
-        });
+        if (!commentContainer) return;
 
-        // 2. Deactivate all navigation buttons for this inner content
-        const contentButtons = document.querySelectorAll('.content-nav button');
-        contentButtons.forEach(button => {
-            button.classList.remove('active-section');
-        });
+        // Clone the template to create a new, active form
+        const replyForm = formTemplate.cloneNode(true);
+        replyForm.removeAttribute('id'); // Remove template ID
+        replyForm.classList.add('active');
 
-        // 3. Show the target section
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active-section');
-        }
+        const nameInput = replyForm.querySelector('#replyCommenterName');
+        const textInput = replyForm.querySelector('#replyCommentText');
+        const submitButton = replyForm.querySelector('#replySubmitButton');
 
-        // 4. Activate the button that was clicked
-        if (evt.currentTarget) {
-            evt.currentTarget.classList.add('active-section');
-        }
+        // Set placeholder and button action
+        textInput.placeholder = `Reply to ${targetName}...`;
+        textInput.value = ''; // Clear previous text
+        nameInput.value = ''; // Clear previous name
         
-        // Scroll the outer content container to the top of the new section
-        const contentTab = document.getElementById('content');
-        if (contentTab) {
-            contentTab.scrollTop = 0;
-        }
-    }
-
-    // --- Placeholder Functions for Comments (Functional logic not included) ---
-    function addComment(replyToId) {
-        alert('Comment posted! (Functionality is a placeholder)');
-        // In a full application, this would capture the form data and dynamically add HTML to commentsList
-    }
-    
-    function showReplyForm(commentId) {
-        alert(`Showing reply form for comment ID: ${commentId} (Functionality is a placeholder)`);
-        // In a full application, this would dynamically insert or display the reply form near the comment
+        // Update the submit button's onclick to use the new addReply function
+        submitButton.setAttribute('onclick', `addReply('${commentId}', '${targetName}')`);
+        
+        // Insert the new form right after the comment container
+        commentContainer.appendChild(replyForm);
     }
     
     function hideReplyForm() {
-        alert('Reply form canceled/hidden. (Functionality is a placeholder)');
-        // In a full application, this would hide the reply form
+        // Find and remove all non-template reply forms
+        document.querySelectorAll('.reply-form-container:not(#replyFormTemplate)').forEach(form => {
+            form.remove();
+        });
+    }
+
+    // --- COMMENT/REPLY ADDITION ---
+    
+    // Core function to add a comment OR a reply (if parentId is provided)
+    function addComment(parentId) {
+        const isReply = parentId !== null;
+        
+        const nameInput = isReply ? document.getElementById('replyCommenterName') : document.getElementById('commenterName');
+        const textInput = isReply ? document.getElementById('replyCommentText') : document.getElementById('commentText');
+        
+        const name = nameInput.value.trim();
+        const text = textInput.value.trim();
+        
+        if (!name || !text) {
+            alert('Please fill in both name and comment!');
+            return;
+        }
+        
+        const now = new Date();
+        const newId = nextCommentId++;
+        
+        const newPost = {
+            id: newId.toString(),
+            parentId: parentId, // null for primary comment, ID string for reply
+            name: name,
+            text: text,
+            time: now.toLocaleString(),
+            replies: [] // Only primary comments will have this array initialized
+        };
+        
+        let comments = getStoredComments();
+
+        if (isReply) {
+            // Find the parent comment and add the new post to its replies array
+            const parentComment = comments.find(c => c.id === parentId);
+            if (parentComment) {
+                // Initialize replies array if it doesn't exist (important for old comments)
+                if (!parentComment.replies) {
+                    parentComment.replies = [];
+                }
+                parentComment.replies.push(newPost);
+            }
+        } else {
+            // Add a new primary comment to the beginning of the list
+            newPost.replies = [];
+            comments.unshift(newPost);
+        }
+
+        // Save and refresh
+        saveComments(comments);
+        refreshCommentList(); 
+        
+        // Clear inputs
+        nameInput.value = '';
+        textInput.value = '';
+        
+        if (isReply) {
+            hideReplyForm();
+        }
     }
     
-    // --- Aesthetic Sparkle Generator (For Blog Post) ---
-    function generateSparkles() {
-        const container = document.getElementById('sparklesContainer');
-        if (!container) return; 
+    // Wrapper for addComment to be called from a reply button, requires targetName
+    function addReply(parentId, targetName) {
+        // We reuse the addComment function, but must ensure the text input 
+        // includes the target's name for clarity in the saved reply text.
+        
+        const textInput = document.getElementById('replyCommentText');
+        // Add a temporary prefix for the target name.
+        if (!textInput.value.startsWith(`@${targetName}`)) {
+            textInput.value = `@${targetName} ${textInput.value}`;
+        }
 
-        for (let i = 0; i < 30; i++) { // Generate 30 sparkles
-            const sparkle = document.createElement('div');
-            sparkle.classList.add('sparkle');
-            
-            // Randomize position and animation delay
-            const top = Math.random() * 100 + 'vh';
-            const left = Math.random() * 100 + 'vw';
-            const delay = Math.random() * 3 + 's';
-            
-            sparkle.style.top = top;
-            sparkle.style.left = left;
-            sparkle.style.animationDelay = delay;
-            
-            container.appendChild(sparkle);
+        addComment(parentId);
+    }
+
+
+    // --- STORAGE & INITIALIZATION ---
+
+    function getStoredComments() {
+        const stored = localStorage.getItem(COMMENTS_STORAGE_KEY);
+        try {
+            return stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.error("Error parsing comments from localStorage:", e);
+            localStorage.removeItem(COMMENTS_STORAGE_KEY);
+            return [];
         }
     }
 
-    // --- Initialization on Page Load ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // Set the initial active tab and button
-        openTab('authors');
-        
-        // Set the initial active content section button
-        const initialContentButton = document.querySelector('#content .content-nav button:first-child');
-        if (initialContentButton) {
-            initialContentButton.classList.add('active-section');
-        }
+    function saveComments(comments) {
+        localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
+    }
+    
+    function addTestComment() {
+      const comments = getStoredComments();
+      if (comments.length === 0) {
+        const testComment = {
+          id: nextCommentId++.toString(),
+          parentId: null,
+          name: "Gemini AI Assistant",
+          text: "The new background music is great! Love the mood. This comment has a reply button now!",
+          time: new Date().toLocaleString(),
+          replies: [
+              {
+                  id: nextCommentId++.toString(),
+                  parentId: "1", // Assuming the first primary comment is ID 1
+                  name: "John Saimon N.",
+                  text: "@Gemini AI Assistant I agree! The music perfectly suits the blog post's aesthetic. Great work on the reply feature!",
+                  time: new Date().toLocaleString(),
+              }
+          ]
+        };
+        // Add the test comment to the beginning
+        comments.unshift(testComment);
+        saveComments(comments);
+      }
+    }
 
-        // Run the sparkle generator
-        generateSparkles();
+    // --- RENDERING ---
+    
+    function renderReply(reply) {
+        // Render a single reply inside the replies-section
+        const replyDiv = document.createElement('div');
+        replyDiv.className = 'reply';
+        
+        const replyText = reply.text.replace(/@([^\s]+)/, '<strong>@$1</strong>'); // Highlight the reply target
+        
+        replyDiv.innerHTML = `
+            <div class="reply-author">${reply.name}</div>
+            <div class="reply-text">${replyText}</div>
+            <div class="comment-time">${reply.time}</div>
+        `;
+        return replyDiv;
+    }
+
+    function renderComment(comment) {
+        const commentsList = document.getElementById('commentsList');
+
+        const commentContainer = document.createElement('div');
+        commentContainer.className = 'comment-container';
+        commentContainer.id = 'comment-container-' + comment.id;
+        
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        
+        commentDiv.innerHTML = `
+            <div class="comment-author">${comment.name}</div>
+            <div class="comment-text">${comment.text}</div>
+            <div class="comment-time">${comment.time}</div>
+            <button class="reply-button" onclick="showReplyForm('${comment.id}', '${comment.name}')">Reply</button>
+        `;
+        
+        commentContainer.appendChild(commentDiv);
+
+        // Render replies if they exist
+        if (comment.replies && comment.replies.length > 0) {
+            const repliesSection = document.createElement('div');
+            repliesSection.className = 'replies-section';
+            
+            // Render replies in the order they were added (latest reply at the bottom of the reply chain)
+            comment.replies.forEach(reply => {
+                repliesSection.appendChild(renderReply(reply));
+            });
+            commentContainer.appendChild(repliesSection);
+        }
+        
+        return commentContainer;
+    }
+
+    function refreshCommentList() {
+        const commentsList = document.getElementById('commentsList');
+        commentsList.innerHTML = ''; // Clear the current list
+
+        const comments = getStoredComments();
+        
+        // Determine the next ID for new comments/replies
+        let maxId = 0;
+        comments.forEach(comment => {
+            maxId = Math.max(maxId, parseInt(comment.id) || 0);
+            if (comment.replies && comment.replies.length > 0) {
+                comment.replies.forEach(reply => {
+                    maxId = Math.max(maxId, parseInt(reply.id) || 0);
+                });
+            }
+        });
+        nextCommentId = maxId + 1;
+
+
+        // Render all comments (newest first)
+        comments.forEach(comment => {
+            commentsList.appendChild(renderComment(comment));
+        });
+    }
+
+
+    // --- PAGE INITIALIZATION ---
+    
+    // Background music control (unchanged)
+    let bgMusic = null;
+    let currentAudio = null;
+
+    function initBackgroundMusic() {
+      if (!bgMusic) {
+        // NOTE: Ensure you have 'lv_0_20251029145200.mp3' in the same folder!
+        bgMusic = new Audio('lv_0_20251029145200.mp3'); 
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3;
+      }
+    }
+
+    function openTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      initBackgroundMusic();
+      if (tabName === 'content') {
+        bgMusic.play().catch(e => console.log('Autoplay prevented:', e));
+      } else {
+        bgMusic.pause();
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
+        }
+      }
+    }
+
+    // CORRECTED FUNCTION SIGNATURE AND LOGIC
+    function openContentSection(event, sectionName) {
+      const sections = document.querySelectorAll('.content-section');
+      const buttons = document.querySelectorAll('.content-nav button');
+      
+      sections.forEach(section => section.classList.remove('active-section'));
+      buttons.forEach(button => button.classList.remove('active-section'));
+      
+      document.getElementById(sectionName).classList.add('active-section');
+      
+      // Use event.currentTarget to reliably target the clicked button
+      if(event && event.currentTarget) {
+        event.currentTarget.classList.add('active-section');
+      }
+      
+      // Hide any active reply forms when switching sections
+      hideReplyForm();
+    }
+    // END CORRECTED FUNCTION
+
+    function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.top = `${Math.random() * 100}%`;
+        sparkle.style.left = `${Math.random() * 100}%`;
+        sparkle.style.animationDelay = `${Math.random() * 3}s`;
+        container.appendChild(sparkle);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        addTestComment();
+        refreshCommentList();
+        createSparkles();
     });
-</script>
+
+  </script>
 </body>
 </html>
